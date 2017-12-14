@@ -17,6 +17,7 @@
 package xyz.leezoom.view.treeview.adapter;
 
 import android.content.Context;
+import android.view.View;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
@@ -80,8 +81,14 @@ public abstract class TreeAdapter<T> extends BaseAdapter {
     return position;
   }
 
-  //public abstract View createView(TreeNode node, Object content);
+  protected void setPadding(View v, int depth) {
+    v.setPadding(baseIndent * (depth + 1),
+            v.getPaddingTop(),
+            v.getPaddingRight(),
+            v.getPaddingBottom());
+  }
 
+  //public abstract View createView(TreeNode node, Object content);
 
   public ArrayList<DefaultTreeNode> getNodesList() {
     return mNodesList;
@@ -97,6 +104,14 @@ public abstract class TreeAdapter<T> extends BaseAdapter {
 
   public void setRoot(DefaultTreeNode node) {
     this.mRoot = node;
+  }
+
+  public int getResourceId() {
+    return mResourceId;
+  }
+
+  public void setResourceId(int mResourceId) {
+    this.mResourceId = mResourceId;
   }
 }
   /*

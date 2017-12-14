@@ -53,11 +53,8 @@ public class SimpleTreeAdapter extends TreeAdapter<String> {
     holder.tv.setText(node.getElement().toString());
     int depth = node.getDepth();
     //set view indent
-    //left, top, right, bottom
-    holder.tv.setPadding(baseIndent * (depth + 1),
-            holder.tv.getPaddingTop(),
-            holder.tv.getPaddingRight(),
-            holder.tv.getPaddingBottom());
+    setPadding(holder.tv, depth);
+
     if (node.isHasChildren() && !node.isExpanded()) {
       //set your icon
     } else if (node.isHasChildren() && node.isExpanded()) {

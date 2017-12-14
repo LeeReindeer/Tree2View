@@ -219,10 +219,14 @@ public class TreeView extends ListView {
     isRootVisible = rootVisible;
   }
 
-  public void setTreeAdapter(SimpleTreeAdapter adapter) {
+  public void setTreeAdapter(TreeAdapter adapter) {
     this.adapter = adapter;
     //call super
     this.setAdapter(adapter);
+  }
+
+  public TreeAdapter getTreeAdapter() {
+    return adapter;
   }
 
   public void refresh(ArrayList<DefaultTreeNode> nodes) {
