@@ -17,25 +17,74 @@
 package xyz.leezoom.tree2;
 
 import android.content.Context;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.github.johnkil.print.PrintView;
+
+import xyz.leezoom.view.treeview.TreeUtils;
 import xyz.leezoom.view.treeview.adapter.TreeAdapter;
 import xyz.leezoom.view.treeview.module.DefaultTreeNode;
 
 public class FileTreeAdapter extends TreeAdapter<FileItem> {
 
-
-  public FileTreeAdapter(Context context, DefaultTreeNode root) {
-    super(context, root);
-  }
-
-  public FileTreeAdapter(Context mContext) {
-    super(mContext);
+  public FileTreeAdapter(Context context, DefaultTreeNode root, int resourceId) {
+    super(context, root, resourceId);
   }
 
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
-    return null;
+    if (mNodesList == null) {
+      mNodesList = TreeUtils.getVisibleNodesD(super.mRoot);
+    }
+    DefaultTreeNode node = mNodesList.get(position);
+    ViewHolder holder = null;
+
+    if (convertView == null) {
+      convertView = LayoutInflater.from(mContext).inflate(mResourceId, parent, false);
+      holder = new ViewHolder();
+      holder.arrowIcon = (PrintView) convertView.findViewById(R.id.arrow_icon);
+      holder.itemIcon = (PrintView) convertView.findViewById(R.id.item_icon);
+      holder.fileText = (TextView) convertView.findViewById(R.id.ft_name);
+      convertView.setTag(holder);
+    } else {
+      holder = (ViewHolder) convertView.getTag();
+    }
+    FileItem fileItem = (FileItem)(node.getElement());
+    holder.fileText.setText(fileItem.getName());
+    int depth = node.getDepth();
+    setPadding(holder.arrowIcon, depth);
+    if (node.isHasChildren() && !node.isExpanded()) {
+      //set right arrowIcon
+      holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_right));
+    } else if (node.isHasChildren() && node.isExpanded()) {
+      //set down arrowIcon
+      holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_down));
+    }
+
+    // TODO: 12/15/17 change to more type of icon(app, pic, code, zip) ?
+    if (fileItem.isDir()) {
+      //set dir icon
+      holder.itemIcon.setIconText(getStringResource(R.string.ic_folder));
+    } else {
+      //set file icon
+      holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_file));
+    }
+    return convertView;
+  }
+
+  String getStringResource(int id) {
+    if (mContext == null) {
+      throw new IllegalStateException("Context is null");
+    }
+    return mContext.getResources().getString(id);
+  }
+
+  class ViewHolder {
+    PrintView arrowIcon;
+    PrintView itemIcon;
+    TextView fileText;
   }
 }

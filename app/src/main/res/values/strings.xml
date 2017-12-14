@@ -1,5 +1,5 @@
 <resources>
-    <string name="app_name">Tree2</string>
+    <string name="app_name">Tree2View</string>
     <!--fonts-->
     <string name="ic_access_alarms">&#xe000;</string>
     <string name="ic_access_time">&#xe001;</string>
