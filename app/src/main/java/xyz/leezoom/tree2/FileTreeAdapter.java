@@ -25,7 +25,6 @@ import android.widget.TextView;
 import com.github.johnkil.print.PrintView;
 
 import xyz.leezoom.view.treeview.TreeUtils;
-import xyz.leezoom.view.treeview.adapter.SimpleTreeAdapter;
 import xyz.leezoom.view.treeview.adapter.TreeAdapter;
 import xyz.leezoom.view.treeview.module.DefaultTreeNode;
 
