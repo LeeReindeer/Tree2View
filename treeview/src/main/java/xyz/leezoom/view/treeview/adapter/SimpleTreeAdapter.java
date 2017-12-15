@@ -53,14 +53,25 @@ public class SimpleTreeAdapter extends TreeAdapter<String> {
     holder.tv.setText(node.getElement().toString());
     int depth = node.getDepth();
     //set view indent
-    setPadding(holder.tv, depth);
-
-    if (node.isHasChildren() && !node.isExpanded()) {
-      //set your icon
-    } else if (node.isHasChildren() && node.isExpanded()) {
-      //set your icon
-    }
+    setPadding(holder.tv, depth, -1);
+    //toggle
+    toggle(holder, node);
     return convertView;
+  }
+
+  @Override
+  public void toggle(Object... objects) {
+    try {
+      DefaultTreeNode node = (DefaultTreeNode) objects[0];
+      ViewHolder holder = (ViewHolder) objects[1];
+      if (node.isHasChildren() && !node.isExpanded()) {
+        //set your icon
+      } else if (node.isHasChildren() && node.isExpanded()) {
+        //set your icon
+      }
+    } catch (ClassCastException e ) {
+      e.printStackTrace();
+    }
   }
 
   class ViewHolder {

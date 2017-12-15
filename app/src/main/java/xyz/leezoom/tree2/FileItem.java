@@ -23,8 +23,8 @@ import java.util.Map;
 public class FileItem {
 
   private boolean isDir;
-
-  private String name; //full name = abstract path
+  private String name;
+  private String absName; //full name = abstract path
   private long size;
   private String type;
 
@@ -58,14 +58,14 @@ public class FileItem {
 
   public FileItem(File file) {
     this.isDir = file.isDirectory();
-    this.name = file.getAbsolutePath();
+    this.absName = file.getAbsolutePath();
     this.size = getSize();
     this.type = getType(file.getName());
   }
 
   @Deprecated
-  public FileItem(String name) {
-    this.name = name;
+  public FileItem(String absName) {
+    this.absName = absName;
   }
 
   public boolean isDir() {
@@ -76,8 +76,17 @@ public class FileItem {
     isDir = dir;
   }
 
+  public String getAbsName() {
+    return absName;
+  }
+
+  public void setAbsName(String absName) {
+    this.absName = absName;
+  }
+
   public String getName() {
-    return name;
+    int lastNameIndex = absName.lastIndexOf("/");
+    return name = absName.substring(lastNameIndex + 1);
   }
 
   public void setName(String name) {

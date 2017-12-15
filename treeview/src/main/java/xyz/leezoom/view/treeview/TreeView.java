@@ -109,8 +109,6 @@ public class TreeView extends ListView {
     this.setOnItemClickListener(new OnTreeItemClickListener());
   }
 
-
-
   public String travelTree() {
     return travelTree(root);
   }
@@ -223,6 +221,9 @@ public class TreeView extends ListView {
     this.adapter = adapter;
     //call super
     this.setAdapter(adapter);
+    this.root = adapter.getRoot();
+    //expanded root node to show it's children
+    this.root.setExpanded(true);
   }
 
   public TreeAdapter getTreeAdapter() {
@@ -242,6 +243,9 @@ public class TreeView extends ListView {
   @Override
   public void setOnItemLongClickListener(OnItemLongClickListener listener) {
     final ArrayList<DefaultTreeNode> nodes = TreeUtils.getAllNodesD(root);
+    //if (nodes == null || nodes.isEmpty()) {
+    //  return;
+    //}
     super.setOnItemLongClickListener(new OnItemLongClickListener() {
       @Override
       public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
@@ -271,17 +275,18 @@ public class TreeView extends ListView {
   /**
    * Implement ItemClickListener, and can't be extended.
    */
-  final class OnTreeItemClickListener implements AdapterView.OnItemClickListener {
+  class OnTreeItemClickListener implements AdapterView.OnItemClickListener {
 
-    private DefaultTreeNode root;
+    DefaultTreeNode root;
+    TreeAdapter mAdapter;
 
     OnTreeItemClickListener() {
-      TreeView.this.adapter = adapter;
-      this.root =  TreeView.this.root;
+      this.mAdapter = adapter;
+      this.root = TreeView.this.root;
     }
 
     /**
-     * Click to toggle view, will call this:
+     * Lazy load.Click to toggle view, will call this:
      * @see SimpleTreeAdapter#getView(int, View, ViewGroup)
      * to refresh view
      */
@@ -300,9 +305,6 @@ public class TreeView extends ListView {
         if (node.isExpanded()) {
           node.setExpanded(false);
           Log.d(TAG, "onItemClick: close");
-          //do not remove...
-          //remove child view
-          //node.removeAllChildren();
         } else {
           node.setExpanded(true);
           adapter.setRoot(root);

@@ -25,6 +25,7 @@ import android.widget.TextView;
 import com.github.johnkil.print.PrintView;
 
 import xyz.leezoom.view.treeview.TreeUtils;
+import xyz.leezoom.view.treeview.adapter.SimpleTreeAdapter;
 import xyz.leezoom.view.treeview.adapter.TreeAdapter;
 import xyz.leezoom.view.treeview.module.DefaultTreeNode;
 
@@ -53,13 +54,37 @@ public class FileTreeAdapter extends TreeAdapter<FileItem> {
       holder = (ViewHolder) convertView.getTag();
     }
     FileItem fileItem = (FileItem)(node.getElement());
+    //get the file name(not the full name)
     holder.fileText.setText(fileItem.getName());
     int depth = node.getDepth();
-    setPadding(holder.arrowIcon, depth);
-    if (node.isHasChildren() && !node.isExpanded()) {
+    setPadding(holder.arrowIcon, depth, -1);
+    toggle(node, holder);
+    return convertView;
+  }
+
+
+  @Override
+  public void toggle(Object... objects) {
+    DefaultTreeNode node = null;
+    ViewHolder holder = null;
+    try {
+      node = (DefaultTreeNode) objects[0];
+      holder = (ViewHolder) objects[1];
+    } catch (ClassCastException e) {
+      e.printStackTrace();
+    }
+    if (!node.isExpanded()) {
       //set right arrowIcon
       holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_right));
-    } else if (node.isHasChildren() && node.isExpanded()) {
+    } else if (node.isExpanded()) {
+      //set down arrowIcon
+      holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_down));
+    }
+    FileItem fileItem = (FileItem)(node.getElement());
+    if (!node.isExpanded()) {
+      //set right arrowIcon
+      holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_right));
+    } else if (node.isExpanded()) {
       //set down arrowIcon
       holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_down));
     }
@@ -72,7 +97,14 @@ public class FileTreeAdapter extends TreeAdapter<FileItem> {
       //set file icon
       holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_file));
     }
-    return convertView;
+    // TODO: 12/15/17 change to more type of icon(app, pic, code, zip) ?
+    if (fileItem.isDir()) {
+      //set dir icon
+      holder.itemIcon.setIconText(getStringResource(R.string.ic_folder));
+    } else {
+      //set file icon
+      holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_file));
+    }
   }
 
   String getStringResource(int id) {

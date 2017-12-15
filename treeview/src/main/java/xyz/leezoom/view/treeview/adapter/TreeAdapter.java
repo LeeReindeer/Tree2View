@@ -18,6 +18,7 @@ package xyz.leezoom.view.treeview.adapter;
 
 import android.content.Context;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
@@ -81,12 +82,24 @@ public abstract class TreeAdapter<T> extends BaseAdapter {
     return position;
   }
 
-  protected void setPadding(View v, int depth) {
-    v.setPadding(baseIndent * (depth + 1),
+  protected void setPadding(View v, int depth, int indent) {
+    if (v == null || depth < 0) {
+      throw new IllegalArgumentException("illegal params");
+    }
+    if (indent < 0) {
+      indent = baseIndent;
+    }
+    v.setPadding(indent * (depth + 1),
             v.getPaddingTop(),
             v.getPaddingRight(),
             v.getPaddingBottom());
   }
+
+  /**
+   * Toggle your object's status
+   * @param objects objects to toggle
+   */
+  public abstract void toggle(Object ... objects);
 
   //public abstract View createView(TreeNode node, Object content);
 

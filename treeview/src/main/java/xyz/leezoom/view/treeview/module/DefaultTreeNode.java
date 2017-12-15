@@ -42,6 +42,7 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
   //this value can still be false.
   boolean hasChildren = false;
 
+  private boolean mExpandable = true;
   //whether this node is expanded, always false when (mExpandable == false)
   private boolean isExpanded = false;
   private boolean mSelectable = true;
@@ -144,6 +145,7 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     if (!children.contains(child)) {
       throw new IllegalArgumentException("is not the child of this");
     }
+    size--;
     children.remove(child);
   }
 
@@ -157,6 +159,7 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     }
     //remove children
     this.children = null;
+    this.size = 0;
     this.hasChildren = false;
   }
 
@@ -245,12 +248,12 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     }
   }
 
-  public boolean isExpandable() {
-    return hasChildren;
+  public void setExpandable(boolean mExpandable) {
+    this.mExpandable = mExpandable;
   }
 
-  public void setExpandable(boolean mExpandable) {
-    this.hasChildren = mExpandable;
+  public boolean isExpandable() {
+    return mExpandable;
   }
 
   public boolean isExpanded() {
@@ -309,6 +312,10 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
 
   public boolean isHasChildren() {
     return hasChildren;
+  }
+
+  public void setHasChildren(boolean hasChildren) {
+    this.hasChildren = hasChildren;
   }
 
   public boolean isRoot() {

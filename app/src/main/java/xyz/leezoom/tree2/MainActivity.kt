@@ -1,9 +1,16 @@
 package xyz.leezoom.tree2
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.widget.AdapterView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.selector
 import org.jetbrains.anko.toast
@@ -12,27 +19,78 @@ import xyz.leezoom.view.treeview.TreeView
 import xyz.leezoom.view.treeview.module.DefaultTreeNode
 import java.io.File
 
+
 class MainActivity : AppCompatActivity() {
 
   private val TAG = "MainActivity"
+  private val WRITE_EXTERNAL_STORAGE = 1
 
   private val INNER_STORAGE = Environment.getExternalStorageDirectory().absolutePath
 
   private val fileOps = listOf("Copy","Cut", "Rename", "Delete")
 
+  private var adapter: FileTreeAdapter? = null
+  private var root: DefaultTreeNode<FileItem> = DefaultTreeNode(FileItem(File(INNER_STORAGE)))
+
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
     setContentView(R.layout.activity_main)
-    //container.addView(createTree(), LinearLayout.LayoutParams(400, 400))
-    val root = DefaultTreeNode("Root")
-    val child1 = DefaultTreeNode("child1")
-    val child2 = DefaultTreeNode("child2")
-    val child3 = DefaultTreeNode("child3")
-    val child4 = DefaultTreeNode("child4")
-    root.addChildren(child1, child2)
-    child1.addChild(child3)
-    child1.addChild(child4)
-    tree_view.root = root
+
+    if (ActivityCompat.checkSelfPermission(this, Manifest.permission.READ_EXTERNAL_STORAGE)
+            != PackageManager.PERMISSION_GRANTED) {
+      requestPermission(Manifest.permission.WRITE_EXTERNAL_STORAGE, WRITE_EXTERNAL_STORAGE)
+    } else {
+      initData()
+    }
+
+    val list = TreeUtils.getVisibleNodesB(root)
+    for (item in list)  Log.w(TAG, "bfs node " + (item.element).toString())
+  }
+
+  private fun initRoot() {
+    //expand root
+    root.isExpanded = true
+    val rootDir = File(INNER_STORAGE)
+    val list = rootDir.listFiles()
+    for (item in list) {
+      this.root.addChild(DefaultTreeNode<FileItem>(FileItem(item)))
+    }
+  }
+
+  private fun initData() {
+    initRoot()
+    adapter = FileTreeAdapter(this@MainActivity, root, R.layout.layout_file_tree_item)
+    tree_view.treeAdapter = adapter
+    tree_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
+      run {
+        val nodes = adapter!!.nodesList
+        //the click item
+        val node: DefaultTreeNode<FileItem> = nodes[position] as DefaultTreeNode<FileItem>
+        Log.d(TAG, "onItemClick: " + node.element.toString())
+        //toggle
+        if (node.isExpanded) {
+          node.isExpanded = false
+          Log.d(TAG, "onItemClick: close")
+          node.removeAllChildren()
+        } else {
+          node.isExpanded = true
+          createNode(node)
+          adapter!!.root = root
+          Log.d(TAG, "onItemClick: open")
+        }
+        //only notify when you try to open an empty folder
+        if (!node.isHasChildren && node.isExpandable && node.isExpanded) {
+          toast("Empty folder")
+        } else if (!node.isHasChildren && !node.isExpandable){
+          //open file in other app
+          val fileItem: FileItem = node.element
+          toast("Opening...")
+          openFile(fileItem)
+        }
+        adapter!!.nodesList = TreeUtils.getVisibleNodesD(root)
+        adapter!!.notifyDataSetChanged()
+      }
+    }
     tree_view.setTreeItemSelectedListener { v, node, pos ->
       val list = TreeUtils.getVisibleNodesD(root)
       toast("You selected " + list[pos].element.toString())
@@ -50,45 +108,73 @@ class MainActivity : AppCompatActivity() {
           else -> { }
         }
       })
-      //Toast.makeText(v.context, "You selected " + TreeUtils.getVisibleNodesD(root)[pos].element.toString(), Toast.LENGTH_SHORT).show()
       false
     }
-    Log.d(TAG, tree_view!!.travelTree())
-    for (item in TreeUtils.getVisibleNodesD(root)) {
-      //debug {"dfs node: $item.element"  }
-      //debug { "test" }
-      Log.d(TAG,"dfs node: " + item.element.toString())
+  }
+
+  private fun createNode(aNode: DefaultTreeNode<FileItem>) {
+    val thisFile = File(aNode.element.absName)
+    if (thisFile.listFiles() != null && thisFile.listFiles().isNotEmpty()) {
+      val itemList = thisFile.listFiles()
+      for (file in itemList) {
+        val n = DefaultTreeNode<FileItem>(FileItem(file))
+        n.isExpandable = file.isDirectory
+        aNode.addChild(n)
+      }
+    }
+  }
+
+  private fun openFile(fileItem: FileItem) {
+    val myIntent = Intent(Intent.ACTION_VIEW)
+    myIntent.data = Uri.fromFile(File(fileItem.absName))
+    val intent = Intent.createChooser(myIntent, "Choose an application to open with:")
+    startActivity(intent)
+
+  }
+
+  override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
+    when(requestCode) {
+      WRITE_EXTERNAL_STORAGE -> {
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+          initData()
+        } else {
+          toast("Permission denied.")
+          finish()
+        }
+      }
+      else -> {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults)
+      }
     }
 
-    val list = TreeUtils.getVisibleNodesB(root)
-    for (item in list)  Log.w(TAG, "bfs node " + item.element.toString())
-
-    //val intent = Intent(this, SecondActivity::class.java)
-    //main_text_view.setOnClickListener { startActivity(intent) }
   }
 
-  /**
-   * Add children(files and dirs) to parent
-   */
-  private fun createNode(parent: DefaultTreeNode<FileItem>) {
-
+  private fun Activity.requestPermission(permission: String, requestCOde: Int) {
+    ActivityCompat.requestPermissions(this,  arrayOf(permission), requestCOde)
   }
 
-  //dfs
-  private fun findAllFileAndDir(): DefaultTreeNode<FileItem> {
-    val rootDir = File(INNER_STORAGE)
-    var root = DefaultTreeNode<FileItem>(FileItem(rootDir))
-    while (rootDir.listFiles() != null && rootDir.listFiles().isNotEmpty()) {
-      val itemList = rootDir.listFiles()
-      createNode(root)
+  //DFS
+  @Deprecated("Too slow...")
+  private fun createTreeNode(aNode: DefaultTreeNode<FileItem>): DefaultTreeNode<FileItem> {
+    val thisFile = File(aNode.element.absName)
+    if (thisFile.listFiles() != null && thisFile.listFiles().isNotEmpty()) {
+      val itemList = thisFile.listFiles()
+      for (file in itemList) {
+        Log.w(TAG, "file: " + file.name)
+        val node = DefaultTreeNode<FileItem>(FileItem(file))
+        root!!.addChild(node)
+        if (file.isDirectory) {
+          createTreeNode(node)
+        } else {
+          continue
+        }
+      }
     }
-    return root;
+    return root!!
   }
-
-
 
   @Deprecated("")
-  private fun createTree(): TreeView {
+  private fun createTree2(): TreeView {
 
     var treeView: TreeView? = null
     val root = DefaultTreeNode("Root")
@@ -121,3 +207,42 @@ class MainActivity : AppCompatActivity() {
     return treeView!!
   }
 }
+/*
+val root = DefaultTreeNode<FileItem>(FileItem("Root"))
+val child1 = DefaultTreeNode<FileItem>(FileItem("Child1"))
+val child2 = DefaultTreeNode<FileItem>(FileItem("Child2"))
+val child3 = DefaultTreeNode<FileItem>(FileItem("Child3"))
+val child4 = DefaultTreeNode<FileItem>(FileItem("Child4"))
+root.addChildren(child1, child2)
+child1.addChild(child3)
+child1.addChild(child4)
+tree_view.root = root
+adapter = FileTreeAdapter(this@MainActivity, root, R.layout.layout_file_tree_item)
+tree_view.treeAdapter = adapter
+tree_view.setTreeItemSelectedListener { v, node, pos ->
+  val list = TreeUtils.getVisibleNodesD(root)
+  toast("You selected " + list[pos].element.toString())
+  selector("File operations", fileOps, { dialogInterface, i ->
+    when (i) {
+      0 -> Log.d(TAG, "Copy")
+      1 -> Log.d(TAG, "Cut")
+      2 -> Log.d(TAG, "Rename")
+      3 -> {
+        Log.d(TAG, "Delete")
+        node.removeThis()
+        list.removeAt(pos)
+        tree_view.refresh(list)
+      }
+      else -> { }
+    }
+  })
+  //Toast.makeText(v.context, "You selected " + TreeUtils.getVisibleNodesD(root)[pos].element.toString(), Toast.LENGTH_SHORT).show()
+  false
+}
+Log.d(TAG, tree_view!!.travelTree())
+for (item in TreeUtils.getVisibleNodesD(root)) {
+  //debug {"dfs node: $item.element"  }
+  //debug { "test" }
+  Log.d(TAG,"dfs node: " + item.element.toString())
+}
+*/
