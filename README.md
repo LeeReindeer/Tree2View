@@ -34,7 +34,7 @@
 > 未上传到 `jCenter()`，可直接clone本项目使用。
 
 ```git
-git@github.com:LeeReindeer/Tree2View.git
+git clone git@github.com:LeeReindeer/Tree2View.git
 ```
 
 Then open your project in Android Studio, then Click `FIle` -> `New` -> `Import Module`, to import this 
@@ -103,3 +103,7 @@ Then simply add:
   val adapter = FileTreeAdapter(this@MainActivity, root, R.layout.layout_file_tree_item)
   treeView.treeAdapter = adapter
 ```
+
+## License
+
+Apache 2.0
