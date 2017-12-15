@@ -7,6 +7,7 @@ import android.content.pm.PackageManager
 import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
+import android.support.annotation.IntegerRes
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
@@ -31,6 +32,8 @@ class MainActivity : AppCompatActivity() {
 
   private var adapter: FileTreeAdapter? = null
   private var root: DefaultTreeNode<FileItem> = DefaultTreeNode(FileItem(File(INNER_STORAGE)))
+  //<hash, count>
+  private var clickCount = HashMap<Int, Int>()
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -52,6 +55,8 @@ class MainActivity : AppCompatActivity() {
     root.isExpanded = true
     val rootDir = File(INNER_STORAGE)
     val list = rootDir.listFiles()
+    //do not rm root node's children or add children
+    clickCount.put(root.hashCode(), 1)
     for (item in list) {
       this.root.addChild(DefaultTreeNode<FileItem>(FileItem(item)))
     }
@@ -66,15 +71,21 @@ class MainActivity : AppCompatActivity() {
         val nodes = adapter!!.nodesList
         //the click item
         val node: DefaultTreeNode<FileItem> = nodes[position] as DefaultTreeNode<FileItem>
-        Log.d(TAG, "onItemClick: " + node.element.toString())
+        val c = if (clickCount[node.hashCode()] == null) 0 else clickCount[node.hashCode()]
+        clickCount.put(node.hashCode(), c!! + 1)
         //toggle
         if (node.isExpanded) {
           node.isExpanded = false
           Log.d(TAG, "onItemClick: close")
-          node.removeAllChildren()
+          //only remove and add node when first time click.
+          if (c == 0) {
+            node.removeAllChildren()
+          }
         } else {
           node.isExpanded = true
-          createNode(node)
+          if (c == 0) {
+            createNode(node)
+          }
           adapter!!.root = root
           Log.d(TAG, "onItemClick: open")
         }
@@ -96,9 +107,16 @@ class MainActivity : AppCompatActivity() {
       toast("You selected " + list[pos].element.toString())
       selector("File operations", fileOps, { dialogInterface, i ->
         when (i) {
-          0 -> Log.d(TAG, "Copy")
-          1 -> Log.d(TAG, "Cut")
-          2 -> Log.d(TAG, "Rename")
+          0 -> {
+            Log.d(TAG, "Copy")
+            //todo
+          }
+          1 -> {
+            Log.d(TAG, "Cut")
+          }
+          2 -> {
+            Log.d(TAG, "Rename")
+          }
           3 -> {
             Log.d(TAG, "Delete")
             node.removeThis()
@@ -173,7 +191,7 @@ class MainActivity : AppCompatActivity() {
     return root!!
   }
 
-  @Deprecated("")
+  @Deprecated("For test...")
   private fun createTree2(): TreeView {
 
     var treeView: TreeView? = null
