@@ -16,7 +16,18 @@
 
 package xyz.leezoom.tree2
 
+import android.app.Activity
+import android.support.v4.app.ActivityCompat
 import java.io.File
+
+
+fun Activity.requestPermission(permission: String, requestCode: Int) {
+  ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+}
+
+fun  File.isHideFile(): Boolean {
+  return (this.name.indexOf(".") == 0)
+}
 
 fun File.copyTo(file: File) {
   this.inputStream().use { input ->

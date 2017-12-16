@@ -10,6 +10,8 @@ import android.os.Environment
 import android.support.v4.app.ActivityCompat
 import android.support.v7.app.AppCompatActivity
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
 import android.widget.AdapterView
@@ -36,11 +38,14 @@ class MainActivity : AppCompatActivity() {
   private var lastClickedFile = ""
   //0 -> select, 1 -> copy, 2 -> cut
   private var selectedMod = 0
+  private var hideMod = true
 
   private var adapter: FileTreeAdapter? = null
   private var root: DefaultTreeNode<FileItem> = DefaultTreeNode(FileItem(File(INNER_STORAGE)))
   //<hash, count>
   private var clickCount = HashMap<Int, Int>()
+
+  private var lastPress: Long = 0
 
   override fun onCreate(savedInstanceState: Bundle?) {
     super.onCreate(savedInstanceState)
@@ -54,7 +59,7 @@ class MainActivity : AppCompatActivity() {
     }
 
     val list = TreeUtils.getVisibleNodesB(root)
-    for (item in list)  Log.w(TAG, "bfs node " + (item.element).toString())
+    //for (item in list)  Log.w(TAG, "bfs node " + (item.element).toString())
   }
 
   private fun initRoot() {
@@ -65,10 +70,17 @@ class MainActivity : AppCompatActivity() {
     root.isSelectable = false
     val rootDir = File(INNER_STORAGE)
     val list = rootDir.listFiles()
+    list.sort()
     //do not rm root node's children or add children
     clickCount.put(root.hashCode(), 1)
     for (item in list) {
-      this.root.addChild(DefaultTreeNode<FileItem>(FileItem(item)))
+      if (!hideMod) {
+        root.addChild(DefaultTreeNode<FileItem>(FileItem(item)))
+      } else {
+        if (!item.isHideFile()) {
+          root.addChild(DefaultTreeNode<FileItem>(FileItem(item)))
+        }
+      }
     }
   }
 
@@ -226,23 +238,35 @@ class MainActivity : AppCompatActivity() {
     }
     tree_view.visibility = VISIBLE
     refresh_view.setOnRefreshListener {
-      tree_view.visibility = GONE
-      tree_view.treeAdapter.nodesList.clear()
-      //adapter!!.notifyDataSetChanged()
-      tree_view.refresh(null)
-      initView()
+      refreshTree()
       refresh_view.isRefreshing = false
     }
+  }
+
+  private fun refreshTree() {
+    tree_view.visibility = GONE
+    tree_view.treeAdapter.nodesList.clear()
+    //adapter!!.notifyDataSetChanged()
+    tree_view.refresh(null)
+    initView()
   }
 
   private fun createNode(aNode: DefaultTreeNode<FileItem>) {
     val thisFile = File(aNode.element.absName)
     if (thisFile.listFiles() != null && thisFile.listFiles().isNotEmpty()) {
       val itemList = thisFile.listFiles()
+      itemList.sort()
       for (file in itemList) {
         val n = DefaultTreeNode<FileItem>(FileItem(file))
         n.isExpandable = file.isDirectory
-        aNode.addChild(n)
+        if (hideMod) {
+          if (!file.isHideFile()) {
+            aNode.addChild(n)
+          }
+        } else {
+          aNode.addChild(n)
+        }
+
       }
     }
   }
@@ -253,6 +277,37 @@ class MainActivity : AppCompatActivity() {
     val intent = Intent.createChooser(myIntent, "Choose an application to open with:")
     startActivity(intent)
 
+  }
+
+  override fun onBackPressed() {
+    val nowPress = System.currentTimeMillis()
+    if (nowPress - lastPress > 1000) {
+      toast(getString(R.string.hint_press_again))
+      lastPress = nowPress
+    } else {
+      finish()
+    }
+  }
+
+  override fun onCreateOptionsMenu(menu: Menu?): Boolean {
+    menuInflater.inflate(R.menu.main_menu, menu)
+    return super.onCreateOptionsMenu(menu)
+  }
+
+  override fun onOptionsItemSelected(item: MenuItem?): Boolean {
+    when (item!!.itemId) {
+      R.id.hide_menu -> {
+        hideMod = !hideMod
+        toast("Hide Mode: $hideMod")
+        runOnUiThread {
+          refreshTree()
+        }
+      }
+      R.id.about_menu -> {
+        startActivity<AboutActivity>()
+      }
+    }
+    return super.onOptionsItemSelected(item)
   }
 
   override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
@@ -271,11 +326,6 @@ class MainActivity : AppCompatActivity() {
     }
 
   }
-
-  private fun Activity.requestPermission(permission: String, requestCode: Int) {
-    ActivityCompat.requestPermissions(this,  arrayOf(permission), requestCode)
-  }
-
   //DFS
   @Deprecated("Too slow...")
   private fun createTreeNode(aNode: DefaultTreeNode<FileItem>): DefaultTreeNode<FileItem> {
