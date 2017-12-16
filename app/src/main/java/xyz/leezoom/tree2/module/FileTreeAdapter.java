@@ -56,6 +56,38 @@ public class FileTreeAdapter extends TreeAdapter<FileItem> {
     FileItem fileItem = (FileItem)(node.getElement());
     //get the file name(not the full name)
     holder.fileText.setText(fileItem.getName());
+    if (fileItem.isDir()) {
+      //set dir icon
+      holder.itemIcon.setIconText(getStringResource(R.string.ic_folder));
+    } else {
+      //set file icon
+      switch (fileItem.getType()) {
+        case FileItem.APK:
+          holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_apk));
+          break;
+        case FileItem.ARCHIVE:
+          holder.itemIcon.setIconText(getStringResource(R.string.ic_archive));
+          break;
+        case FileItem.AUDIO:
+          holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_audio));
+          break;
+        case FileItem.CODE:
+          holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_code));
+          break;
+        case FileItem.VIDEO:
+          holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_video));
+          break;
+        case FileItem.PIC:
+          holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_image));
+          break;
+        case FileItem.DOC:
+          holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_document));
+          break;
+        default:
+          holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_file));
+          break;
+      }
+    }
     int depth = node.getDepth();
     setPadding(holder.arrowIcon, depth, -1);
     toggle(node, holder);
@@ -79,31 +111,6 @@ public class FileTreeAdapter extends TreeAdapter<FileItem> {
     } else if (node.isExpanded()) {
       //set down arrowIcon
       holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_down));
-    }
-    FileItem fileItem = (FileItem)(node.getElement());
-    if (!node.isExpanded()) {
-      //set right arrowIcon
-      holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_right));
-    } else if (node.isExpanded()) {
-      //set down arrowIcon
-      holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_down));
-    }
-
-    // TODO: 12/15/17 change to more type of icon(app, pic, code, zip) ?
-    if (fileItem.isDir()) {
-      //set dir icon
-      holder.itemIcon.setIconText(getStringResource(R.string.ic_folder));
-    } else {
-      //set file icon
-      holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_file));
-    }
-    // TODO: 12/15/17 change to more type of icon(app, pic, code, zip) ?
-    if (fileItem.isDir()) {
-      //set dir icon
-      holder.itemIcon.setIconText(getStringResource(R.string.ic_folder));
-    } else {
-      //set file icon
-      holder.itemIcon.setIconText(getStringResource(R.string.ic_drive_file));
     }
   }
 

@@ -28,6 +28,13 @@ public class FileItem {
   private long size;
   private String type;
 
+  public static final String VIDEO = "video";
+  public static final String CODE = "code";
+  public static final String AUDIO = "audio";
+  public static final String ARCHIVE = "archive";
+  public static final String APK = "apk";
+  public static final String PIC = "picture";
+  public static final String DOC = "doc";
   private static Map<String, String> typeMap = new HashMap<>();
 
   //init map
@@ -40,9 +47,14 @@ public class FileItem {
     }
 
     String[] text = {"txt", "xml", "conf", "prop", "cpp", "h", "java", "class", "log", "json", "js",
-            "php", "css", "py", "c", "c++", "cfg", "ini", "bat", "mf", "mtd", "lua", "html", "htm"};
+            "php", "css", "py", "c", "c++", "cfg", "ini", "bat", "mf", "mtd", "lua", "html", "htm", "kt"};
     for (String s : text) {
-      typeMap.put(s, "text");
+      typeMap.put(s, "code");
+    }
+
+    String[] doc = {"doc", "md", "xls", "xlsx", "ppt", "pptx", "pdf"};
+    for (String s : doc) {
+      typeMap.put(s, "doc");
     }
 
     String[] audio = {"m3u", "m4a", "m4b", "m4p", "mp2", "mp3", "mpga", "ogg", "wav", "wma", "wmv", "3gpp", "flac", "amr"};
@@ -50,10 +62,16 @@ public class FileItem {
       typeMap.put(s, "audio");
     }
 
+    String[] pic = {"jpg", "jpeg", "png", "gif", "webp", "exif", "tiff", "bmp", "psd", "svg"};
+    for (String s : pic) {
+      typeMap.put(s, "picture");
+    }
+
     String[] archive = {"zip", "rar", "7z", "tar", "jar", "gz", "xz"};
     for (String s : archive) {
       typeMap.put(s, "archive");
     }
+    typeMap.put("apk", "apk");
   }
 
   public FileItem(File file) {
@@ -61,7 +79,7 @@ public class FileItem {
     this.absName = file.getAbsolutePath();
     this.size = getSize();
     this.name = file.getName();
-    this.type = getType();
+    this.type = getMinType();
   }
 
   @Deprecated
@@ -101,6 +119,14 @@ public class FileItem {
   }
 
   public String getType() {
+    return type;
+  }
+
+  public void setType(String type) {
+    this.type = type;
+  }
+
+  private String getMinType() {
     int dotIndex = name.lastIndexOf(".");
     if (dotIndex == -1 || dotIndex == name.length()) {
       return "";
