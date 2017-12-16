@@ -35,6 +35,7 @@ public class FileTreeAdapter extends TreeAdapter<FileItem> {
     super(context, root, resourceId);
   }
 
+  @SuppressWarnings("RedundantCast")
   @Override
   public View getView(int position, View convertView, ViewGroup parent) {
     if (mNodesList == null) {
@@ -105,12 +106,17 @@ public class FileTreeAdapter extends TreeAdapter<FileItem> {
     } catch (ClassCastException e) {
       e.printStackTrace();
     }
-    if (!node.isExpanded()) {
-      //set right arrowIcon
-      holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_right));
-    } else if (node.isExpanded()) {
-      //set down arrowIcon
-      holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_down));
+    //only toggle for dir
+    if (node.isExpandable()) {
+      if (!node.isExpanded()) {
+        //set right arrowIcon
+        holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_right));
+      } else if (node.isExpanded()) {
+        //set down arrowIcon
+        holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_down));
+      }
+    } else {
+      //holder.arrowIcon.setVisibility(View.GONE);
     }
   }
 

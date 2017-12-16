@@ -90,11 +90,13 @@ class MainActivity : AppCompatActivity() {
     //do not rm root node's children or add children
     clickCount.put(root.hashCode(), 1)
     for (item in list) {
+      val n = DefaultTreeNode<FileItem>(FileItem(item))
+      n.isExpandable = item.isDirectory && n.isHasChildren
       if (!hideMod) {
-        root.addChild(DefaultTreeNode<FileItem>(FileItem(item)))
+        root.addChild(n)
       } else {
         if (!item.isHideFile()) {
-          root.addChild(DefaultTreeNode<FileItem>(FileItem(item)))
+          root.addChild(n)
         }
       }
     }
@@ -129,9 +131,10 @@ class MainActivity : AppCompatActivity() {
           Log.d(TAG, "onItemClick: open")
         }
         //only notify when you try to open an empty folder
-        if (!node.isHasChildren && node.isExpandable && node.isExpanded) {
+        if (!node.isExpandable && node.element.isDir) {
           toast("Empty folder")
-        } else if (!node.isHasChildren && !node.isExpandable){
+      }
+        if (!node.element.isDir){
           //open file in other app
           val fileItem: FileItem = node.element
           toast("Opening...")
@@ -274,7 +277,7 @@ class MainActivity : AppCompatActivity() {
       itemList.sort()
       for (file in itemList) {
         val n = DefaultTreeNode<FileItem>(FileItem(file))
-        n.isExpandable = file.isDirectory
+        n.isExpandable = file.isDirectory && n.isHasChildren
         if (hideMod) {
           if (!file.isHideFile()) {
             aNode.addChild(n)
@@ -282,7 +285,6 @@ class MainActivity : AppCompatActivity() {
         } else {
           aNode.addChild(n)
         }
-
       }
     }
   }
