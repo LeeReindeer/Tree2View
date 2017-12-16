@@ -17,12 +17,22 @@
 package xyz.leezoom.tree2
 
 import android.app.Activity
+import android.content.Intent
+import android.net.Uri
 import android.support.v4.app.ActivityCompat
+import xyz.leezoom.tree2.module.FileItem
 import java.io.File
 
 
 fun Activity.requestPermission(permission: String, requestCode: Int) {
   ActivityCompat.requestPermissions(this, arrayOf(permission), requestCode)
+}
+
+fun Activity.openFile(fileItem: FileItem) {
+  val myIntent = Intent(Intent.ACTION_VIEW)
+  myIntent.data = Uri.fromFile(File(fileItem.absName))
+  val intent = Intent.createChooser(myIntent, "Choose an application to open with:")
+  startActivity(intent)
 }
 
 fun  File.isHideFile(): Boolean {

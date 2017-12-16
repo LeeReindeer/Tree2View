@@ -41,7 +41,8 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
   //just a mark, even node has children,
   //this value can still be false.
   boolean hasChildren = false;
-
+  //same as hasChildren, but it's default value is true.
+  //it let an expandable node can add children, after add the hasChildren will be true
   private boolean mExpandable = true;
   //whether this node is expanded, always false when (mExpandable == false)
   private boolean isExpanded = false;
@@ -97,7 +98,7 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     }
     if (children == null) {
       children = new LinkedList<>();
-      this.hasChildren = true;
+      this.hasChildren = mExpandable = true;
     }
     size++;
     child.setParent(this);
@@ -118,7 +119,7 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     }
     if (children == null) {
       children = new LinkedList<>();
-      this.hasChildren = true;
+      this.hasChildren = mExpandable = true;
     }
     size ++;
     child.setParent(this);
@@ -160,7 +161,7 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     //remove children
     this.children = null;
     this.size = 0;
-    this.hasChildren = false;
+    this.hasChildren = mExpandable = false;
   }
 
   public void removeAllChildren() {
