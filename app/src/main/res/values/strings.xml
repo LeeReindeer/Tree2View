@@ -435,4 +435,10 @@
     <string name="ic_wifi_tethering">&#xe1af;</string>
     <string name="ic_work">&#xe1b0;</string>
     <!--fonts-->
+    <string name="menu_hide_show">Hide/Show</string>
+    <string name="menu_about">About</string>
+    <string name="hint_press_again">Press angin to exit</string>
+    <string name="about_page">https://github.com/LeeReindeer/Tree2View</string>
+    <string name="about_text">This is Tree2View example.</string>
+    <string name="about_me">Contact me: \nhttps://t.me/LeeReindeer</string>
 </resources>
