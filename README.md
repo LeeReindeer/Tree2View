@@ -6,7 +6,7 @@
 
 ## 主要功能 - Features
 
-|TreeView|FileManage|
+|TreeView|File Explorer|
 |--------|----------|
 |①多级分层的树结构视图 | 基本的文件管理器布局|
 |②记忆展开状态 | 自动展开上次打开未关闭的目录|
@@ -15,15 +15,15 @@
 |⑤选择模式 | 长按节点进行文件操作(Copy, Cut, Rename, Delete) |
 
 
-## TreeView 实现原理 - How it work
+## 实现原理 - Implement
 
 - TreeView 继承自 ListView
 
-- DFS遍历可展开的树节点，转化为List 与 TreeAdapter 进行适配。
+- DFS遍历可展开的树节点，转化为List 与 [TreeAdapter](https://github.com/LeeReindeer/Tree2View/blob/master/treeview/src/main/java/xyz/leezoom/view/treeview/adapter/TreeAdapter.java) 进行适配。
 
-- 分级的视觉效果通过 SimpleTreeAdapter（通过对不同深度的节点设置不同的**缩进**）来实现的。
+- 分级的视觉效果通过 [SimpleTreeAdapter](https://github.com/LeeReindeer/Tree2View/blob/master/treeview/src/main/java/xyz/leezoom/view/treeview/adapter/SimpleTreeAdapter.java)（通过对不同深度的节点设置不同的**缩进**）来实现的。
 
-- 使用上直接使用 DefaultTreeNode （使用链表实现子节点之间的联系）增删节点。这样就实现了视觉效果和数据结构统一的设计。
+- 使用 [DefaultTreeNode](https://github.com/LeeReindeer/Tree2View/blob/master/treeview/src/main/java/xyz/leezoom/view/treeview/module/DefaultTreeNode.java) 来（用链表保存子节点）增删节点。这样就实现了视觉效果和数据结构统一的设计。
 
 ## 效果预览 - Preview
 
