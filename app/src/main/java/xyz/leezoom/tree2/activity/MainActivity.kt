@@ -17,9 +17,7 @@
 package xyz.leezoom.tree2.activity
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.net.Uri
 import android.os.Bundle
 import android.os.Environment
 import android.support.v4.app.ActivityCompat
@@ -29,6 +27,9 @@ import android.view.Menu
 import android.view.MenuItem
 import android.view.View.GONE
 import android.view.View.VISIBLE
+import android.view.ViewGroup
+import android.view.animation.Animation
+import android.view.animation.AnimationUtils
 import android.widget.AdapterView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.*
@@ -51,7 +52,7 @@ class MainActivity : AppCompatActivity() {
   private val fileOps = listOf("Copy","Cut", "Rename", "Delete")
 
   private var lastSelectedNode: DefaultTreeNode<FileItem> ? = null
-  private var lastClickedFile = ""
+  private var lastClickedFileName = ""
   //0 -> select, 1 -> copy, 2 -> cut
   private var selectedMod = 0
   private var hideMod = true
@@ -109,12 +110,14 @@ class MainActivity : AppCompatActivity() {
     tree_view.treeAdapter = adapter
     tree_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
       run {
-        val nodes = adapter!!.nodesList
+        Log.d(TAG, "Clicked pos: $position")
+        var nodes = adapter!!.nodesList
+        //for (i in 0 until nodes.size) Log.i(TAG, "index: $i,node:" + (nodes[i].element as FileItem).name)
         //the click item
         val node: DefaultTreeNode<FileItem> = nodes[position] as DefaultTreeNode<FileItem>
         val c = if (clickCount[node.hashCode()] == null) 0 else clickCount[node.hashCode()]
         clickCount.put(node.hashCode(), c!! + 1)
-        //toggle
+        //remove children
         if (node.isExpanded) {
           node.isExpanded = false
           Log.d(TAG, "onItemClick: close")
@@ -122,28 +125,49 @@ class MainActivity : AppCompatActivity() {
           if (c == 0) {
             node.removeAllChildren()
           }
+          val offset = parent.firstVisiblePosition
+          Log.d(TAG, "add view offset: $offset")
+          val start = position - offset + 1
+          for (i in start..if (start + node.size < tree_view.childCount) start + node.size - 1 else tree_view.childCount) {
+            rmItemAnim(parent, i)
+          }
         } else {
+          //add children for this node
           node.isExpanded = true
           if (c == 0) {
             createNode(node)
           }
-          adapter!!.root = root
+          //refresh nodes
+          //nodes = TreeUtils.getVisibleNodesD(root)
+          //for (i in 0 until nodes.size) Log.i(TAG, "index: $i,node:" + (nodes[i].element as FileItem).name)
+          Log.d(TAG,"TreeView children: ${tree_view.childCount}")
+          //update view
+          adapter!!.nodesList = TreeUtils.getVisibleNodesD(root)
+          tree_view.refresh(null)
+          //start animation
+          val offset = parent.firstVisiblePosition
+          Log.d(TAG, "anim offset: $offset")
+          val start = position - offset + 1
+          Log.d(TAG, "anim start: $start")
+          Log.d(TAG, "node size: ${node.size}")
+          Log.d(TAG, "view count: ${tree_view.childCount}")
+          for (i in start..if (start + node.size < tree_view.childCount) start + node.size - 1 else tree_view.childCount) {
+            Log.d(TAG, "anim index: $i")
+            addItemAnim(parent, i)
+          }
+          //adapter!!.root = root
           Log.d(TAG, "onItemClick: open")
         }
         //only notify when you try to open an empty folder
         if (!node.isExpandable && node.element.isDir) {
           toast("Empty folder")
-      }
+        }
         if (!node.element.isDir){
           //open file in other app
           val fileItem: FileItem = node.element
           toast("Opening...")
-          openFile(fileItem)
+          this.openFile(fileItem)
         }
-        adapter!!.nodesList = TreeUtils.getVisibleNodesD(root)
-        //adapter!!.nodesList = nodes
-        tree_view.refresh(null)
-        //adapter!!.notifyDataSetChanged()
       }
     }
     tree_view.setTreeItemSelectedListener { _, node, pos ->
@@ -161,12 +185,12 @@ class MainActivity : AppCompatActivity() {
                   0 -> {
                     Log.d(TAG, "Copy")
                     selectedMod = 1
-                    lastClickedFile = fileItem.absName
+                    lastClickedFileName = fileItem.absName
                   }
                   1 -> {
                     Log.d(TAG, "Cut")
                     selectedMod = 2
-                    lastClickedFile = fileItem.absName
+                    lastClickedFileName = fileItem.absName
                   }
                   2 -> {
                     Log.d(TAG, "Rename")
@@ -217,8 +241,8 @@ class MainActivity : AppCompatActivity() {
           }
         //select copy dest dir
           1 -> {
-            if (lastClickedFile.isNotEmpty() && fileItem.isDir) {
-              val source = File(lastClickedFile)
+            if (lastClickedFileName.isNotEmpty() && fileItem.isDir) {
+              val source = File(lastClickedFileName)
               val dest = File(file, source.name)
               source.copyTo(dest)
               val newNode = DefaultTreeNode(FileItem(source))
@@ -230,13 +254,13 @@ class MainActivity : AppCompatActivity() {
             } else {
               toast("Can't copy")
             }
-            lastClickedFile = ""
+            lastClickedFileName = ""
             selectedMod = 0
           }
         //select cut dest dir
           2 -> {
-            if (lastClickedFile.isNotEmpty() && fileItem.isDir) {
-              val source = File(lastClickedFile)
+            if (lastClickedFileName.isNotEmpty() && fileItem.isDir) {
+              val source = File(lastClickedFileName)
               val dest = File(file, source.name)
               source.moveTo(dest)
               val newNode = DefaultTreeNode(FileItem(source))
@@ -248,7 +272,7 @@ class MainActivity : AppCompatActivity() {
             } else {
               toast("Can't move")
             }
-            lastClickedFile = ""
+            lastClickedFileName = ""
             selectedMod = 0
           }
         }
@@ -289,12 +313,53 @@ class MainActivity : AppCompatActivity() {
     }
   }
 
-  private fun openFile(fileItem: FileItem) {
-    val myIntent = Intent(Intent.ACTION_VIEW)
-    myIntent.data = Uri.fromFile(File(fileItem.absName))
-    val intent = Intent.createChooser(myIntent, "Choose an application to open with:")
-    startActivity(intent)
+  private fun addItemAnim(parent: ViewGroup, index: Int) {
+    val anim = AnimationUtils.loadAnimation(this@MainActivity, android.R.anim.slide_in_left)
+    anim.duration = 500
+    //if (tree_view.getChildAt(index) != null) {
+    //  tree_view.getChildAt(index).startAnimation(anim)
+    //}
+    try {
+      parent.getChildAt(index).startAnimation(anim)
+    } catch (e: NullPointerException) {
+      e.printStackTrace()
+      Log.e(TAG, "null index: $index")
+    }
+    anim.setAnimationListener(object : Animation.AnimationListener {
+      override fun onAnimationStart(animation: Animation) {
+      }
 
+      override fun onAnimationEnd(animation: Animation) {
+        adapter!!.nodesList = TreeUtils.getVisibleNodesD(root)
+        tree_view.refresh(null)
+      }
+
+      override fun onAnimationRepeat(animation: Animation) {
+      }
+    })
+  }
+
+  private fun rmItemAnim(parent: ViewGroup, index: Int) {
+    val anim = AnimationUtils.loadAnimation(this@MainActivity, android.R.anim.slide_out_right)
+    anim.duration = 500
+    try {
+      parent.getChildAt(index).startAnimation(anim)
+    } catch (e: NullPointerException) {
+      e.printStackTrace()
+      Log.e(TAG, "null index: $index")
+    }
+    anim.setAnimationListener(object : Animation.AnimationListener {
+      override fun onAnimationStart(animation: Animation) {
+      }
+
+      override fun onAnimationEnd(animation: Animation) {
+        adapter!!.nodesList = TreeUtils.getVisibleNodesD(root)
+        tree_view.refresh(null)
+      }
+
+      override fun onAnimationRepeat(animation: Animation) {
+      }
+    })
   }
 
   override fun onBackPressed() {
@@ -364,4 +429,3 @@ class MainActivity : AppCompatActivity() {
     return root
   }
 }
-

@@ -21,6 +21,8 @@ import android.util.AttributeSet;
 import android.util.Log;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
 import android.widget.AdapterView;
 import android.widget.ListView;
 
@@ -285,6 +287,48 @@ public class TreeView extends ListView {
       this.root = TreeView.this.root;
     }
 
+    void addItemAnim(int index) {
+      Animation anim = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
+      anim.setDuration(500);
+      anim.setAnimationListener(new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+          //notify change
+          adapter.setNodesList(TreeUtils.getAllNodesD(root));
+          TreeView.this.refresh(null);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+      });
+    }
+
+    void rmItemAnim(int index) {
+      Animation anim = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_out_right);
+      anim.setDuration(500);
+      anim.setAnimationListener(new Animation.AnimationListener() {
+        @Override
+        public void onAnimationStart(Animation animation) {
+        }
+
+        @Override
+        public void onAnimationEnd(Animation animation) {
+          //notify change
+          adapter.setNodesList(TreeUtils.getAllNodesD(root));
+          TreeView.this.refresh(null);
+        }
+
+        @Override
+        public void onAnimationRepeat(Animation animation) {
+        }
+      });
+    }
+
     /**
      * Lazy load.Click to toggle view, will call this:
      * @see SimpleTreeAdapter#getView(int, View, ViewGroup)
@@ -305,14 +349,28 @@ public class TreeView extends ListView {
         if (node.isExpanded()) {
           node.setExpanded(false);
           Log.d(TAG, "onItemClick: close");
+          //start animation before view update
+          int offset = parent.getFirstVisiblePosition();
+          int start = position - offset + 1;
+          int end = start + node.getSize() < parent.getChildCount() ? start + offset : parent.getChildCount();
+          for (int i = start; i<= end;i++) {
+            rmItemAnim(i);
+          }
         } else {
           node.setExpanded(true);
-          adapter.setRoot(root);
+          //update view
+          adapter.setNodesList(TreeUtils.getVisibleNodesD(root));
+          TreeView.this.refresh(null);
+          //start animation after view update
+          int offset = parent.getFirstVisiblePosition();
+          int start = position - offset + 1;
+          int end = start + node.getSize() < parent.getChildCount() ? start + offset : parent.getChildCount();
+          for (int i = start; i<= end;i++) {
+            addItemAnim(i);
+          }
           Log.d(TAG, "onItemClick: open");
         }
       }
-      adapter.setNodesList(TreeUtils.getVisibleNodesD(root));
-      adapter.notifyDataSetChanged();
     }
 
   }
