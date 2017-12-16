@@ -1,7 +1,22 @@
-package xyz.leezoom.tree2
+/*
+ *       Copyright 2017 LeeReindeer <reindeerlee.work@gmail.com>
+ *
+ *       Licensed under the Apache License, Version 2.0 (the "License");
+ *       you may not use this file except in compliance with the License.
+ *       You may obtain a copy of the License at
+ *
+ *           http://www.apache.org/licenses/LICENSE-2.0
+ *
+ *       Unless required by applicable law or agreed to in writing, software
+ *       distributed under the License is distributed on an "AS IS" BASIS,
+ *       WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ *       See the License for the specific language governing permissions and
+ *       limitations under the License.
+ */
+
+package xyz.leezoom.tree2.activity
 
 import android.Manifest
-import android.app.Activity
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.net.Uri
@@ -17,6 +32,7 @@ import android.view.View.VISIBLE
 import android.widget.AdapterView
 import kotlinx.android.synthetic.main.activity_main.*
 import org.jetbrains.anko.*
+import xyz.leezoom.tree2.*
 import xyz.leezoom.tree2.module.FileItem
 import xyz.leezoom.tree2.module.FileTreeAdapter
 import xyz.leezoom.tree2.module.FileUtils
@@ -160,7 +176,7 @@ class MainActivity : AppCompatActivity() {
                         editor.setText(fileItem.name)
                         okButton {
                           reName = if (file.getFileType().isNotEmpty()) {
-                            editor.text.toString() + "." + file.getFileType()
+                            editor.text.toString() + "" + file.getFileType()
                           } else {  //no file type
                             editor.text.toString()
                           }
@@ -281,7 +297,7 @@ class MainActivity : AppCompatActivity() {
 
   override fun onBackPressed() {
     val nowPress = System.currentTimeMillis()
-    if (nowPress - lastPress > 1000) {
+    if (nowPress - lastPress > 1500) {
       toast(getString(R.string.hint_press_again))
       lastPress = nowPress
     } else {

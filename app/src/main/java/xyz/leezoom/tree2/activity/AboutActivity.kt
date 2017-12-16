@@ -14,16 +14,15 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.tree2
+package xyz.leezoom.tree2.activity
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager
 import android.os.Bundle
 import android.support.v7.app.AppCompatActivity
-import android.webkit.WebView
-import android.webkit.WebViewClient
 import kotlinx.android.synthetic.main.activity_about.*
 import org.jetbrains.anko.*
+import xyz.leezoom.tree2.R
 
 class AboutActivity : AppCompatActivity() {
 

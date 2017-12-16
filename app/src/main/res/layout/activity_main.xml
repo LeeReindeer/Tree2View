@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="xyz.leezoom.tree2.MainActivity">
+    tools:context="xyz.leezoom.tree2.activity.MainActivity">
 
     <!--
     <TextView
