@@ -182,6 +182,10 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     return element;
   }
 
+  public void setElement(E element) {
+    this.element = element;
+  }
+
   public TreeNode getParent() {
     return parent;
   }

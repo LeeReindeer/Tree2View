@@ -27,8 +27,7 @@ import xyz.leezoom.view.treeview.module.DefaultTreeNode;
 
 /**
  * Extend this class to set your own <code>TreeModel</code>
- * T can be your custom view or view holder
- * Every node has a adapter
+ * T can be your data
  */
 @SuppressWarnings("WeakerAccess")
 public abstract class TreeAdapter<T> extends BaseAdapter {
