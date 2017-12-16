@@ -16,15 +16,20 @@
         android:text="Hello World!"
         android:gravity="center_horizontal"
         android:layout_gravity="center"/>-->
-
-    <xyz.leezoom.view.treeview.TreeView
-        android:id="@+id/tree_view"
-        android:layout_marginTop="16dp"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/refresh_view"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="#ffffff"
-        android:dividerHeight="1px">
+        android:layout_height="match_parent">
 
-    </xyz.leezoom.view.treeview.TreeView>
+        <xyz.leezoom.view.treeview.TreeView
+            android:id="@+id/tree_view"
+            android:layout_marginTop="16dp"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="#ffffff"
+            android:dividerHeight="1px">
 
+        </xyz.leezoom.view.treeview.TreeView>
+
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

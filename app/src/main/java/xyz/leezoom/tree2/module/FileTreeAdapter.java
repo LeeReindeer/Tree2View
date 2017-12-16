@@ -14,7 +14,7 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.tree2;
+package xyz.leezoom.tree2.module;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -24,6 +24,7 @@ import android.widget.TextView;
 
 import com.github.johnkil.print.PrintView;
 
+import xyz.leezoom.tree2.R;
 import xyz.leezoom.view.treeview.TreeUtils;
 import xyz.leezoom.view.treeview.adapter.TreeAdapter;
 import xyz.leezoom.view.treeview.module.DefaultTreeNode;

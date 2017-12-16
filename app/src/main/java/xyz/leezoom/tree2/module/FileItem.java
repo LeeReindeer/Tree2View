@@ -14,7 +14,7 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.tree2;
+package xyz.leezoom.tree2.module;
 
 import java.io.File;
 import java.util.HashMap;
@@ -60,7 +60,8 @@ public class FileItem {
     this.isDir = file.isDirectory();
     this.absName = file.getAbsolutePath();
     this.size = getSize();
-    this.type = getType(file.getName());
+    this.name = file.getName();
+    this.type = getType();
   }
 
   @Deprecated
@@ -89,20 +90,22 @@ public class FileItem {
     return name = absName.substring(lastNameIndex + 1);
   }
 
+  //just for display
   public void setName(String name) {
     this.name = name;
+    this.absName = FileUtils.getPrefixPath(this.absName) + name;
   }
 
   public long getSize() {
     return size;
   }
 
-  private String getType(String fileName) {
-    int dotIndex = fileName.lastIndexOf(".");
-    if (dotIndex == -1 || dotIndex == fileName.length()) {
+  public String getType() {
+    int dotIndex = name.lastIndexOf(".");
+    if (dotIndex == -1 || dotIndex == name.length()) {
       return "";
     }
-    String fileSuffix = fileName.substring(dotIndex + 1).toLowerCase();
+    String fileSuffix = name.substring(dotIndex + 1).toLowerCase();
     return typeMap.containsKey(fileSuffix) ? typeMap.get(fileSuffix) : fileSuffix;
   }
 }
