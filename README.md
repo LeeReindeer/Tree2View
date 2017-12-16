@@ -27,7 +27,7 @@
 
 ## 效果预览 - Preview
 
-![image](http://ojvnx00zs.bkt.clouddn.com/tree_view_product1.png)
+![image](http://ojvnx00zs.bkt.clouddn.com/tree2view_2.png)
 
 ## 下载 - Download
 
