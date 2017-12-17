@@ -102,6 +102,7 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     }
     size++;
     child.setParent(this);
+    ((DefaultTreeNode) child).depth = this.depth + 1;
     ((DefaultTreeNode) child).id = generateId();
     children.add((DefaultTreeNode) child);
   }
@@ -123,6 +124,7 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     }
     size ++;
     child.setParent(this);
+    child.depth = this.depth + 1;
     child.id = generateId();
     children.add(index, (DefaultTreeNode) child);
   }
@@ -215,15 +217,20 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
 
   /**
    * Return number of this node's depth.
+   * depth is auto increase at:
+   * @see #addChild(TreeNode), so is this cheaper to get depth?
    * @return node's depth
    */
   public int getDepth() {
-    int d = 0;
-    TreeNode thisNode = this;
-    while ((thisNode = thisNode.getParent()) != null) {
-      d++;
+    //int d = 0;
+    //TreeNode thisNode = this;
+    //while ((thisNode = thisNode.getParent()) != null) {
+    //  d++;
+    //}
+    //depth = d;
+    if (this.parent == null) {  //the root node
+     depth = 0;
     }
-    depth = d;
     return depth;
   }
 
