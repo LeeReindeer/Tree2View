@@ -60,6 +60,15 @@ fun File.getPrefixPath(): String {
   return abPath.substring(0, index + 1)
 }
 
+fun File.getNameWithoutType(): String {
+  val fileName = this.name
+  val index = fileName.lastIndexOf(".")
+  if (index == -1 || index == 0) {
+    return fileName
+  }
+  return fileName.substring(0, index)
+}
+
 fun File.getFileType(): String {
   val fileName = this.name
   val index = fileName.lastIndexOf(".")
