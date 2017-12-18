@@ -28,7 +28,6 @@ import android.widget.ListView;
 
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 
 import xyz.leezoom.view.treeview.adapter.SimpleTreeAdapter;
 import xyz.leezoom.view.treeview.adapter.TreeAdapter;
@@ -60,7 +59,7 @@ public class TreeView extends ListView {
   // TODO: 12/14/17
   protected boolean isRootVisible = true;
 
-  protected boolean isTraveled = false;
+  protected boolean defaultAnimation = true;
 
   private StringBuilder sb = new StringBuilder();
 
@@ -242,6 +241,14 @@ public class TreeView extends ListView {
     adapter.notifyDataSetChanged();
   }
 
+  public boolean isDefaultAnimation() {
+    return defaultAnimation;
+  }
+
+  public void setDefaultAnimation(boolean animation) {
+    defaultAnimation = animation;
+  }
+
   @Override
   public void setOnItemLongClickListener(OnItemLongClickListener listener) {
     final ArrayList<DefaultTreeNode> nodes = TreeUtils.getAllNodesD(root);
@@ -281,15 +288,31 @@ public class TreeView extends ListView {
 
     DefaultTreeNode root;
     TreeAdapter mAdapter;
+    int ADD_ANIM = 0x10;
+    int RM_ANIM = 0x11;
 
     OnTreeItemClickListener() {
       this.mAdapter = adapter;
       this.root = TreeView.this.root;
     }
 
-    void addItemAnim(int index) {
-      Animation anim = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
+    void addAnimation(int type, ViewGroup parent, int index) {
+      Animation anim = null;
+      if (type == ADD_ANIM) {
+        anim = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_in_left);
+      } else if (type == RM_ANIM) {
+        anim = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_out_right);
+      }
+      assert anim != null;
       anim.setDuration(500);
+
+      try {
+        parent.getChildAt(index).startAnimation(anim);
+      } catch (NullPointerException e) {
+        e.printStackTrace();
+        Log.e(TAG, "null index: $index");
+      }
+
       anim.setAnimationListener(new Animation.AnimationListener() {
         @Override
         public void onAnimationStart(Animation animation) {
@@ -298,7 +321,7 @@ public class TreeView extends ListView {
         @Override
         public void onAnimationEnd(Animation animation) {
           //notify change
-          adapter.setNodesList(TreeUtils.getAllNodesD(root));
+          adapter.setNodesList(TreeUtils.getVisibleNodesD(root));
           TreeView.this.refresh(null);
         }
 
@@ -308,25 +331,13 @@ public class TreeView extends ListView {
       });
     }
 
-    void rmItemAnim(int index) {
-      Animation anim = AnimationUtils.loadAnimation(mContext, android.R.anim.slide_out_right);
-      anim.setDuration(500);
-      anim.setAnimationListener(new Animation.AnimationListener() {
-        @Override
-        public void onAnimationStart(Animation animation) {
-        }
-
-        @Override
-        public void onAnimationEnd(Animation animation) {
-          //notify change
-          adapter.setNodesList(TreeUtils.getAllNodesD(root));
-          TreeView.this.refresh(null);
-        }
-
-        @Override
-        public void onAnimationRepeat(Animation animation) {
-        }
-      });
+    void startAnimation(int type,AdapterView<?> parent, int position, int children) {
+      int offset = parent.getFirstVisiblePosition();
+      int start = position - offset + 1;
+      int end = start + children < parent.getChildCount() ? start + offset : parent.getChildCount();
+      for (int i = start; i <= end; i++) {
+        addAnimation(type, parent,i);
+      }
     }
 
     /**
@@ -343,32 +354,28 @@ public class TreeView extends ListView {
       Log.d(TAG, "onItemClick: " + node.getElement().toString());
       if (!node.isHasChildren()) {
         Log.w(TAG, "onItemClick: not Expandable");
-        return;
       } else {
         //toggle
         if (node.isExpanded()) {
           node.setExpanded(false);
           Log.d(TAG, "onItemClick: close");
-          //start animation before view update
-          int offset = parent.getFirstVisiblePosition();
-          int start = position - offset + 1;
-          int end = start + node.getSize() < parent.getChildCount() ? start + offset : parent.getChildCount();
-          for (int i = start; i<= end;i++) {
-            rmItemAnim(i);
+          if (defaultAnimation) {
+            //start animation before view update
+            startAnimation(RM_ANIM, parent, position, node.getSize());
+          } else {
+            adapter.setNodesList(TreeUtils.getVisibleNodesD(root));
+            TreeView.this.refresh(null);
           }
         } else {
           node.setExpanded(true);
+          Log.d(TAG, "onItemClick: open");
           //update view
           adapter.setNodesList(TreeUtils.getVisibleNodesD(root));
           TreeView.this.refresh(null);
-          //start animation after view update
-          int offset = parent.getFirstVisiblePosition();
-          int start = position - offset + 1;
-          int end = start + node.getSize() < parent.getChildCount() ? start + offset : parent.getChildCount();
-          for (int i = start; i<= end;i++) {
-            addItemAnim(i);
+          if (defaultAnimation) {
+            //start animation after view update
+            startAnimation(ADD_ANIM, parent, position, node.getSize());
           }
-          Log.d(TAG, "onItemClick: open");
         }
       }
     }

@@ -354,21 +354,6 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     return sb.toString();
   }
 
-  /*
-  public TreeAdapter getAdapter() {
-    return mAdapter;
-  }
-
-  public void setAdapter(TreeAdapter mAdapter) {
-    if (mAdapter != null) {
-      mAdapter.mNode = this;
-      this.mAdapter = mAdapter;
-    } else {
-      throw new IllegalArgumentException("adapter is null");
-    }
-  }
-  */
-
   /*getters & setters*/
 
   /**
