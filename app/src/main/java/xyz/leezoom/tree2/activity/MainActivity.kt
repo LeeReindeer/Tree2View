@@ -119,6 +119,9 @@ class MainActivity : AppCompatActivity() {
         clickCount.put(node.hashCode(), c!! + 1)
         //remove children
         if (node.isExpanded) {
+          //count visible child before remove
+          //-1 for discount itself
+          val visibleCount = TreeUtils.getVisibleNodesD(node).size - 1
           node.isExpanded = false
           Log.d(TAG, "onItemClick: close")
           //only remove and add node when first time click.
@@ -128,7 +131,7 @@ class MainActivity : AppCompatActivity() {
           val offset = parent.firstVisiblePosition
           Log.d(TAG, "add view offset: $offset")
           val start = position - offset + 1
-          for (i in start..if (start + node.size < tree_view.childCount) start + node.size - 1 else tree_view.childCount) {
+          for (i in start..if (start + visibleCount < tree_view.childCount) start + visibleCount - 1 else tree_view.childCount) {
             rmItemAnim(parent, i)
           }
         } else {
@@ -151,7 +154,8 @@ class MainActivity : AppCompatActivity() {
           Log.d(TAG, "anim start: $start")
           Log.d(TAG, "node size: ${node.size}")
           Log.d(TAG, "view count: ${tree_view.childCount}")
-          for (i in start..if (start + node.size < tree_view.childCount) start + node.size - 1 else tree_view.childCount) {
+          val visibleCount = TreeUtils.getVisibleNodesD(node).size - 1
+          for (i in start..if (start + visibleCount < tree_view.childCount) start + visibleCount - 1 else tree_view.childCount) {
             Log.d(TAG, "anim index: $i")
             addItemAnim(parent, i)
           }
@@ -202,10 +206,10 @@ class MainActivity : AppCompatActivity() {
                         title = "Rename:"
                         //val edit = EditText(applicationContext)
                         val editor = editText()
-                        editor.setText(fileItem.name)
+                        editor.setText(file.getNameWithoutType())
                         okButton {
                           reName = if (file.getFileType().isNotEmpty()) {
-                            editor.text.toString() + "" + file.getFileType()
+                            editor.text.toString() + "." + file.getFileType()
                           } else {  //no file type
                             editor.text.toString()
                           }
