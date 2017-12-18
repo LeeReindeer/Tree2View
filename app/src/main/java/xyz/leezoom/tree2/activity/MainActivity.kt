@@ -184,11 +184,13 @@ class MainActivity : AppCompatActivity() {
                 when (i) {
                   0 -> {
                     Log.d(TAG, "Copy")
+                    toast("Selected a folder to copy to.")
                     selectedMod = 1
                     lastClickedFileName = fileItem.absName
                   }
                   1 -> {
                     Log.d(TAG, "Cut")
+                    toast("Selected a folder to move to.")
                     selectedMod = 2
                     lastClickedFileName = fileItem.absName
                   }
@@ -388,6 +390,18 @@ class MainActivity : AppCompatActivity() {
       }
       R.id.about_menu -> {
         startActivity<AboutActivity>()
+      }
+      R.id.undo_menu -> {
+        //just for cancel cut and copy
+        if (selectedMod != 0) {
+          selectedMod = 0
+          val tip = if (selectedMod == 1) "Copy" else "Cut"
+          toast("Cancel $tip $lastClickedFileName")
+          lastClickedFileName = ""
+          lastSelectedNode = null
+        } else {
+          toast("Can't undo")
+        }
       }
     }
     return super.onOptionsItemSelected(item)

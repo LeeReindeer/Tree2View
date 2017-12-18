@@ -441,4 +441,5 @@
     <string name="about_page">https://github.com/LeeReindeer/Tree2View</string>
     <string name="about_text">This is Tree2View example.</string>
     <string name="about_me">Contact me: \nhttps://t.me/LeeReindeer</string>
+    <string name="menu_undo">Undo</string>
 </resources>

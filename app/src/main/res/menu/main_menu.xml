@@ -19,6 +19,11 @@
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
     <item
+        android:title="@string/menu_undo"
+        android:id="@+id/undo_menu"
+        app:showAsAction="ifRoom"/>
+
+    <item
         android:title="@string/menu_hide_show"
         android:id="@+id/hide_menu"
         app:showAsAction="never"/>
