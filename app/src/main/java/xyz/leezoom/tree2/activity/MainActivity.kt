@@ -49,7 +49,7 @@ class MainActivity : AppCompatActivity() {
 
   private val INNER_STORAGE = Environment.getExternalStorageDirectory().absolutePath
 
-  private val fileOps = listOf("Copy","Cut", "Rename", "Delete")
+  private val fileOps = listOf("Copy", "Cut", "Rename", "Delete")
 
   private var lastSelectedNode: DefaultTreeNode<FileItem> ? = null
   private var lastClickedFileName = ""
