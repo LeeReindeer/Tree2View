@@ -33,7 +33,7 @@ import xyz.leezoom.view.treeview.module.DefaultTreeNode;
 
 public class FileTreeAdapter extends TreeAdapter<FileItem> {
 
-  public FileTreeAdapter(Context context, DefaultTreeNode root, int resourceId) {
+  public FileTreeAdapter(Context context, DefaultTreeNode<FileItem> root, int resourceId) {
     super(context, root, resourceId);
   }
 
@@ -44,7 +44,7 @@ public class FileTreeAdapter extends TreeAdapter<FileItem> {
       mNodesList = TreeUtils.getVisibleNodesD(super.mRoot);
     }
     DefaultTreeNode node = mNodesList.get(position);
-    ViewHolder holder = null;
+    ViewHolder holder;
 
     if (convertView == null) {
       convertView = LayoutInflater.from(mContext).inflate(mResourceId, parent, false);
@@ -119,10 +119,11 @@ public class FileTreeAdapter extends TreeAdapter<FileItem> {
       }
     } else {
       //holder.arrowIcon.setVisibility(View.GONE);
+      holder.arrowIcon.setIconText(getStringResource(R.string.ic_keyboard_arrow_right));
     }
   }
 
-  String getStringResource(int id) {
+  private String getStringResource(int id) {
     if (mContext == null) {
       throw new IllegalStateException("Context is null");
     }

@@ -28,7 +28,7 @@ import xyz.leezoom.view.treeview.module.DefaultTreeNode;
 
 public class SimpleTreeAdapter extends TreeAdapter<String> {
 
-  public SimpleTreeAdapter(Context context, DefaultTreeNode<Object> root, int resourceId) {
+  public SimpleTreeAdapter(Context context, DefaultTreeNode<String> root, int resourceId) {
     super(context, root, resourceId);
   }
 

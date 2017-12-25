@@ -33,7 +33,7 @@ import xyz.leezoom.view.treeview.module.DefaultTreeNode;
 public abstract class TreeAdapter<T> extends BaseAdapter {
 
   //root node
-  protected DefaultTreeNode<Object> mRoot;
+  protected DefaultTreeNode<T> mRoot;
   protected Context mContext;
   protected ArrayList<DefaultTreeNode> mNodesList;
 
@@ -45,12 +45,12 @@ public abstract class TreeAdapter<T> extends BaseAdapter {
     this.mContext = mContext;
   }
 
-  public TreeAdapter(Context context, DefaultTreeNode root) {
+  public TreeAdapter(Context context, DefaultTreeNode<T> root) {
     this.mRoot = root;
     this.mContext= context;
   }
 
-  public TreeAdapter(Context context, DefaultTreeNode<Object> root,  int resourceId) {
+  public TreeAdapter(Context context, DefaultTreeNode<T> root,  int resourceId) {
     this.mRoot = root;
     this.mContext = context;
     this.mResourceId = resourceId;
@@ -114,7 +114,7 @@ public abstract class TreeAdapter<T> extends BaseAdapter {
     return mRoot;
   }
 
-  public void setRoot(DefaultTreeNode node) {
+  public void setRoot(DefaultTreeNode<T> node) {
     this.mRoot = node;
   }
 
@@ -126,19 +126,3 @@ public abstract class TreeAdapter<T> extends BaseAdapter {
     this.mResourceId = mResourceId;
   }
 }
-  /*
-    public int getCount() {
-      return 0;
-    }
-
-    public Object getItem(int position) {
-      return null;
-    }
-
-    public long getItemId(int position) {
-      return 0;
-    }
-
-  public View getNodeView() {
-    return createView(mNode, mRoot.element);
-  }*/
