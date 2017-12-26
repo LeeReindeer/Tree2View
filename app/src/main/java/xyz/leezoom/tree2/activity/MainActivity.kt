@@ -75,7 +75,7 @@ class MainActivity : AppCompatActivity() {
       initView()
     }
 
-    val list = TreeUtils.getVisibleNodesB(root)
+    //val list = TreeUtils.getVisibleNodesB(root)
     //for (item in list)  Log.w(TAG, "bfs node " + (item.element).toString())
   }
 
@@ -426,24 +426,5 @@ class MainActivity : AppCompatActivity() {
       }
     }
 
-  }
-  //DFS
-  @Deprecated("Too slow...")
-  private fun createTreeNode(aNode: DefaultTreeNode<FileItem>): DefaultTreeNode<FileItem> {
-    val thisFile = File(aNode.element.absName)
-    if (thisFile.listFiles() != null && thisFile.listFiles().isNotEmpty()) {
-      val itemList = thisFile.listFiles()
-      for (file in itemList) {
-        Log.w(TAG, "file: " + file.name)
-        val node = DefaultTreeNode<FileItem>(FileItem(file))
-        root.addChild(node)
-        if (file.isDirectory) {
-          createTreeNode(node)
-        } else {
-          continue
-        }
-      }
-    }
-    return root
   }
 }

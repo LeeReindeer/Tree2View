@@ -25,7 +25,7 @@ android {
 dependencies {
     implementation fileTree(dir: 'libs', include: ['*.jar'])
     implementation "org.jetbrains.kotlin:kotlin-stdlib-jre7:$kotlin_version"
-    implementation 'com.android.support:appcompat-v7:26.+'
+    implementation 'com.android.support:appcompat-v7:26.1.0'
     implementation "org.jetbrains.anko:anko-common:$anko_version"
     compile "org.jetbrains.anko:anko-sdk25:$anko_version" // sdk15, sdk19, sdk21, sdk23 are also available
     compile "org.jetbrains.anko:anko-appcompat-v7:$anko_version"
