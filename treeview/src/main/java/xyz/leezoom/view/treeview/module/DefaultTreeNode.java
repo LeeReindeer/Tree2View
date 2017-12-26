@@ -162,6 +162,8 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     }
     //remove children
     this.children = null;
+    //unlink from parent
+    this.parent = null;
     this.size = 0;
     this.hasChildren = mExpandable = false;
   }
