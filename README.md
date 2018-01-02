@@ -1,4 +1,6 @@
-# Tree2View
+# Tree2View 
+
+[![Build Status](https://travis-ci.org/LeeReindeer/Tree2View.svg?branch=master)](https://travis-ci.org/LeeReindeer/Tree2View)
 
 > TreeView implementation in Android.
 >
