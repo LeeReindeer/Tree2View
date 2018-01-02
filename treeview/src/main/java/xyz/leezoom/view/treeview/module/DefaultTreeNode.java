@@ -219,6 +219,7 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
 
   /**
    * Return number of this node's depth.
+   * Bug: After create a node your should immediately add it.
    * depth is auto increase at:
    * @see #addChild(TreeNode), so is this cheaper to get depth?
    * @return node's depth

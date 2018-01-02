@@ -331,12 +331,12 @@ public class TreeView extends ListView {
       });
     }
 
-    void startAnimation(int type,AdapterView<?> parent, int position, int children) {
+    void startAnimation(int type, AdapterView<?> parent, int position, int visibleCount) {
       int offset = parent.getFirstVisiblePosition();
       int start = position - offset + 1;
-      int end = start + children < parent.getChildCount() ? start + offset : parent.getChildCount();
+      int end = start + visibleCount < parent.getChildCount() ? (start + visibleCount - 1) : parent.getChildCount();
       for (int i = start; i <= end; i++) {
-        addAnimation(type, parent,i);
+        addAnimation(type, parent, i);
       }
     }
 
@@ -357,6 +357,7 @@ public class TreeView extends ListView {
       } else {
         //toggle
         if (node.isExpanded()) {
+          int visibleCount = TreeUtils.getVisibleNodesD(node).size() - 1;
           node.setExpanded(false);
           Log.d(TAG, "onItemClick: close");
           if (defaultAnimation) {
@@ -374,6 +375,7 @@ public class TreeView extends ListView {
           TreeView.this.refresh(null);
           if (defaultAnimation) {
             //start animation after view update
+            int visibleCount = TreeUtils.getVisibleNodesD(node).size() - 1;
             startAnimation(ADD_ANIM, parent, position, node.getSize());
           }
         }

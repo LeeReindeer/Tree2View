@@ -55,7 +55,7 @@ public class SimpleTreeAdapter extends TreeAdapter<String> {
     //set view indent
     setPadding(holder.tv, depth, -1);
     //toggle
-    toggle(holder, node);
+    //toggle(holder, node);
     return convertView;
   }
 
