@@ -2,7 +2,7 @@
 
 > TreeView implementation in Android.
 >
-> 数据结构课程设计
+> [数据结构课程设计](http://leezoom.xyz/2018/01/02/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%8A%A5%E5%91%8A/)
 
 ## 主要功能 - Features
 
@@ -28,7 +28,9 @@
 
 ## 效果预览 - Preview
 
-![image](http://ojvnx00zs.bkt.clouddn.com/tree2view_2.png)
+![](/screenshot/tree2view_demo1.png)
+
+![](/screenshot/tree2view_demo2.png)
 
 ## 下载 - Download
 
@@ -69,6 +71,7 @@ Kotlin(Java is similar whit it)
   val treeView = TreeView(this@MainActivity, root)
   val child1 = DefaultTreeNode("Child1")
   val child2 = DefaultTreeNode("Child2")
+  // After create a node your should immediately add it.
   root.addChild(child1)
   root.addChild(child2)
   val child3 = DefaultTreeNode("Child3")
