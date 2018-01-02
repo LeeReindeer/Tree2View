@@ -30,9 +30,9 @@
 
 ## 效果预览 - Preview
 
-![](/screenshot/tree2view_demo1.png)
+![](https://github.com/LeeReindeer/Tree2View/blob/master/screenshot/tree2view_demo1.png)
 
-![](/screenshot/tree2view_demo2.png)
+![](https://github.com/LeeReindeer/Tree2View/blob/master/screenshot/tree2view_demo2.png)
 
 ## 下载 - Download
 
