@@ -159,7 +159,6 @@ public class TreeView extends ListView {
    * @return array of <code>TreeNode</code>
    */
   public TreeNode[] getFullPath() {
-    // TODO: 12/14/17 bfs
     return (TreeNode[]) TreeUtils.getAllNodesB(root).toArray();
   }
 

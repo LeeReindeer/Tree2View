@@ -3,58 +3,64 @@
 [![Build Status](https://travis-ci.org/LeeReindeer/Tree2View.svg?branch=master)](https://travis-ci.org/LeeReindeer/Tree2View)
 
 > TreeView implementation in Android.
->
-> [数据结构课程设计](http://leezoom.xyz/2018/01/02/%E6%95%B0%E6%8D%AE%E7%BB%93%E6%9E%84%E8%AF%BE%E7%A8%8B%E8%AE%BE%E8%AE%A1%E6%8A%A5%E5%91%8A/)
 
-## 主要功能 - Features
+[中文版](/README-ZH.md)
 
-|TreeView|File Explorer|
+## Features
+
+|TreeView|File Explorer(Advanced Example)|
 |--------|----------|
-|①多级分层的树结构视图 | 基本的文件管理器布局|
-|②记忆展开状态 | 自动展开上次打开未关闭的目录|
-|③使用适配器设计模式，用户可自定义 TreeAdapter | 对不同类型的文件显示不同的Icon |
-|④动态增删节点 | 删除和添加文件后可自动刷新状态 |
-|⑤选择模式 | 长按节点进行文件操作(Copy, Cut, Rename, Delete) |
-|⑥动画支持，内置增删节点的动画 | 增删文件时带有动画 |
+|①Multi-level tree view | Basic file manager layout|
+|②Remember expansion state | Automatically expand the last unclosed directory|
+|③Customize TreeAdapter | Different types of documents show different Icon |
+|④Dynamic add and delete  nodes | refresh status after delete and add files |
+|⑤Select listener | Long press node for file operations (Copy, Cut, Rename, Delete) |
+|⑥Animation support | Add or delete files with animation |
 
+You can also see [a more simple example](/demo/app/src/main/java/xyz/leezoom/tree2view_demo/MainActivity.java).
 
-## 实现原理 - Implement
+## Implement
 
-- TreeView 继承自 ListView
+- TreeView extends from ListView.
 
-- DFS遍历可展开的树节点，转化为List 与 [TreeAdapter](https://github.com/LeeReindeer/Tree2View/blob/master/treeview/src/main/java/xyz/leezoom/view/treeview/adapter/TreeAdapter.java) 进行适配。
+- DFS travel the expandable tree node, and convert it to List which adapt with [TreeAdapter](https://github.com/LeeReindeer/Tree2View/blob/master/treeview/src/main/java/xyz/leezoom/view/treeview/adapter/TreeAdapter.java).
 
-- 分级的视觉效果通过 [SimpleTreeAdapter](https://github.com/LeeReindeer/Tree2View/blob/master/treeview/src/main/java/xyz/leezoom/view/treeview/adapter/SimpleTreeAdapter.java)（通过对不同深度的节点设置不同的**缩进**）来实现的。
+- Use [SimpleTreeAdapter](https://github.com/LeeReindeer/Tree2View/blob/master/treeview/src/main/java/xyz/leezoom/view/treeview/adapter/SimpleTreeAdapter.java) ot set different indentation on nodes of different depths.
 
-- 使用 [DefaultTreeNode](https://github.com/LeeReindeer/Tree2View/blob/master/treeview/src/main/java/xyz/leezoom/view/treeview/module/DefaultTreeNode.java) 来（用链表保存子节点）增删节点。这样就实现了视觉效果和数据结构统一的设计。
+- Use LinkedList to store node's children, see [DefaultTreeNode](https://github.com/LeeReindeer/Tree2View/blob/master/treeview/src/main/java/xyz/leezoom/view/treeview/module/DefaultTreeNode.java).
 
-## 效果预览 - Preview
+## Preview
 
 ![](https://github.com/LeeReindeer/Tree2View/blob/master/screenshot/tree2view_demo1.png)
 
 ![](https://github.com/LeeReindeer/Tree2View/blob/master/screenshot/tree2view_demo2.png)
 
-## 下载 - Download
+## Download
 
-> 未上传到 `jCenter()`，可直接clone本项目使用。
+> To-do: upload to jCenter.
+
+1. But now, you can just clone this repo to use Tree2View.
 
 ```git
 git clone git@github.com:LeeReindeer/Tree2View.git
 ```
 
-Then open your project in Android Studio, then Click `FIle` -> `New` -> `Import Module`, to import this 
+2. Open your project in Android Studio, then Click `FIle` -> `New` -> `Import Module`, to import this 
 module.
 
-And add dependence in your `build.gradle`
+3. Add dependence in your `build.gradle`
 ```groovy
  implementation project(path: ':treeview')
+ //or
+ compile project(path: ':treeview')
 ```
 
-## 使用 - Usage
+## Usage
+
+1. Add in your xml:
 
 Feel free to use it as `ListView`.
 
-XML:
 ```xml
     <xyz.leezoom.view.treeview.TreeView
         android:id="@+id/tree_view"
@@ -67,10 +73,10 @@ XML:
     </xyz.leezoom.view.treeview.TreeView>
 ```
 
-Kotlin(Java is similar whit it)
+2. Add children in Kotlin code(Java is similar whit it)
 ```kotlin
   var root :DefaultTreeNode? = DefaultTreeNode("Root")
-  val treeView = TreeView(this@MainActivity, root)
+  tree_view.root = root
   val child1 = DefaultTreeNode("Child1")
   val child2 = DefaultTreeNode("Child2")
   // After create a node your should immediately add it.
@@ -78,9 +84,16 @@ Kotlin(Java is similar whit it)
   root.addChild(child2)
   val child3 = DefaultTreeNode("Child3")
   child1.addChild(child3)
+  //whether the root's children is expanded by default
+  tree_view.isRootVisible = true
+  //animation
+  tree_view.isDefaultAnimation = true
 ```
+3. Add click listener and select listener
 
-If you want to use customized item view, you should implement `TreeAapater`, like this:
+Tree2View has a default click listener, but it's ok to add your own.You can refer to [here](https://github.com/LeeReindeer/Tree2View/blob/master/app/src/main/java/xyz/leezoom/tree2/activity/MainActivity.kt#L111).
+
+4. If you want to use customized item view, you should implement `TreeAapater`, like this:
 ```java
 public class FileTreeAdapter extends TreeAdapter<FileItem> {
   //resourceId is your customized view resourceId, please use RelativeLayout, and let view neighbour.
