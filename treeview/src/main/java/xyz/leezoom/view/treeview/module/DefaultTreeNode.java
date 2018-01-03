@@ -217,6 +217,21 @@ public class DefaultTreeNode<E> implements TreeNode, Serializable, Cloneable{
     return size;
   }
 
+
+  /**
+   *
+   * @return the expanded nodes count
+   */
+  public int getVisibleSize() {
+    int c = 0;
+    for (DefaultTreeNode child : children) {
+      if (child.isExpanded()) {
+        ++c;
+      }
+    }
+    return c;
+  }
+
   /**
    * Return number of this node's depth.
    * Bug: After create a node your should immediately add it.

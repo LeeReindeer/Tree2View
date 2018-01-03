@@ -16,6 +16,7 @@
 
 package xyz.leezoom.treeview;
 
+import org.junit.Before;
 import org.junit.Test;
 
 import xyz.leezoom.view.treeview.module.DefaultTreeNode;
@@ -29,7 +30,9 @@ public class TreeNodeTest {
   private DefaultTreeNode<String> child2 = new DefaultTreeNode<>("child2");
   private DefaultTreeNode<String> child3 = new DefaultTreeNode<>("child3");
 
-  {
+
+  @Before
+  public void init() {
     root.addChildren(child1, child2);
     child1.addChild(child3);
   }

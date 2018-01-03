@@ -56,7 +56,7 @@ public class TreeView extends ListView {
 
   //The root node
   protected DefaultTreeNode root;
-  // TODO: 12/14/17
+
   protected boolean isRootVisible = true;
 
   protected boolean defaultAnimation = true;
@@ -100,12 +100,7 @@ public class TreeView extends ListView {
       return;
     }
     if (this.root == null || this.root != root) {
-      this.root = root;
-      //expanded root node to show it's children
-      this.root.setExpanded(true);
-      adapter = new SimpleTreeAdapter(mContext, root, R.layout.layout_tree_item);
-      this.setAdapter(adapter);
-      adapter.notifyDataSetChanged();
+      setTreeAdapter(new SimpleTreeAdapter(mContext, root, R.layout.layout_tree_item));
     }
     this.setOnItemClickListener(new OnTreeItemClickListener());
   }
@@ -216,6 +211,7 @@ public class TreeView extends ListView {
 
   public void setRootVisible(boolean rootVisible) {
     isRootVisible = rootVisible;
+    root.setExpanded(rootVisible);
   }
 
   public void setTreeAdapter(TreeAdapter adapter) {
@@ -224,7 +220,7 @@ public class TreeView extends ListView {
     this.setAdapter(adapter);
     this.root = adapter.getRoot();
     //expanded root node to show it's children
-    this.root.setExpanded(true);
+    this.root.setExpanded(isRootVisible);
   }
 
   public TreeAdapter getTreeAdapter() {
@@ -307,10 +303,11 @@ public class TreeView extends ListView {
       anim.setDuration(500);
 
       try {
+        //FIXME NULL POINT
         parent.getChildAt(index).startAnimation(anim);
       } catch (NullPointerException e) {
         e.printStackTrace();
-        Log.e(TAG, "null index: $index");
+        Log.e(TAG, "null index: " + index);
       }
 
       anim.setAnimationListener(new Animation.AnimationListener() {
@@ -334,7 +331,7 @@ public class TreeView extends ListView {
     void startAnimation(int type, AdapterView<?> parent, int position, int visibleCount) {
       int offset = parent.getFirstVisiblePosition();
       int start = position - offset + 1;
-      int end = start + visibleCount < parent.getChildCount() ? (start + visibleCount - 1) : parent.getChildCount();
+      int end = (start + visibleCount) <= parent.getChildCount() ? (start + visibleCount - 1) : parent.getChildCount();
       for (int i = start; i <= end; i++) {
         addAnimation(type, parent, i);
       }
@@ -357,17 +354,20 @@ public class TreeView extends ListView {
       } else {
         //toggle
         if (node.isExpanded()) {
+          //close
           int visibleCount = TreeUtils.getVisibleNodesD(node).size() - 1;
+          Log.d(TAG, "onItemClick, visibleCount: " + visibleCount);
           node.setExpanded(false);
           Log.d(TAG, "onItemClick: close");
           if (defaultAnimation) {
             //start animation before view update
-            startAnimation(RM_ANIM, parent, position, node.getSize());
+            startAnimation(RM_ANIM, parent, position, visibleCount);
           } else {
             adapter.setNodesList(TreeUtils.getVisibleNodesD(root));
             TreeView.this.refresh(null);
           }
         } else {
+          //open
           node.setExpanded(true);
           Log.d(TAG, "onItemClick: open");
           //update view
@@ -376,7 +376,9 @@ public class TreeView extends ListView {
           if (defaultAnimation) {
             //start animation after view update
             int visibleCount = TreeUtils.getVisibleNodesD(node).size() - 1;
-            startAnimation(ADD_ANIM, parent, position, node.getSize());
+            Log.d(TAG, "onItemClick, visibleCount: " + visibleCount);
+            //FIXME NULL
+            startAnimation(ADD_ANIM, parent, position, visibleCount);
           }
         }
       }

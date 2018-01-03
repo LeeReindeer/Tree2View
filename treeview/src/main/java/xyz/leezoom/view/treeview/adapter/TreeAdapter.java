@@ -64,7 +64,7 @@ public abstract class TreeAdapter<T> extends BaseAdapter {
     if (mNodesList != null) {
       return mNodesList.size();
     } else {
-      return mRoot.getSize() + 1;
+      return mRoot.getVisibleSize() + 1;
     }
   }
 

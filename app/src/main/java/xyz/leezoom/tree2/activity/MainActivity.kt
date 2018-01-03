@@ -155,7 +155,8 @@ class MainActivity : AppCompatActivity() {
           Log.d(TAG, "node size: ${node.size}")
           Log.d(TAG, "view count: ${tree_view.childCount}")
           val visibleCount = TreeUtils.getVisibleNodesD(node).size - 1
-          for (i in start..if (start + visibleCount < tree_view.childCount) start + visibleCount - 1 else tree_view.childCount) {
+          Log.d(TAG, "visible count: $visibleCount")
+          for (i in start..if (start + visibleCount <= tree_view.childCount) (start + visibleCount - 1) else tree_view.childCount) {
             Log.d(TAG, "anim index: $i")
             addItemAnim(parent, i)
           }
