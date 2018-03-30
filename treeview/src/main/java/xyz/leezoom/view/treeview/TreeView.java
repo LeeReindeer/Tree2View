@@ -63,7 +63,6 @@ public class TreeView extends ListView {
 
   private StringBuilder sb = new StringBuilder();
 
-  // TODO: 12/14/17 use HashMap?
   private ArrayList<DefaultTreeNode> searchList = new ArrayList<>();
   //record the node's expanded status
   private HashMap<DefaultTreeNode, Boolean> expandedState;

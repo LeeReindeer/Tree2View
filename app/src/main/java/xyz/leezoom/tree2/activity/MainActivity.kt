@@ -106,12 +106,13 @@ class MainActivity : AppCompatActivity() {
   @Suppress("UNCHECKED_CAST")
   private fun initView() {
     initRoot()
+    tree_view.requestLayout()
     adapter = FileTreeAdapter(this@MainActivity, root, R.layout.layout_file_tree_item)
     tree_view.treeAdapter = adapter
     tree_view.onItemClickListener = AdapterView.OnItemClickListener { parent, view, position, id ->
       run {
         Log.d(TAG, "Clicked pos: $position")
-        var nodes = adapter!!.nodesList
+        val nodes = adapter!!.nodesList
         //for (i in 0 until nodes.size) Log.i(TAG, "index: $i,node:" + (nodes[i].element as FileItem).name)
         //the click item
         val node: DefaultTreeNode<FileItem> = nodes[position] as DefaultTreeNode<FileItem>
@@ -146,7 +147,8 @@ class MainActivity : AppCompatActivity() {
           Log.d(TAG,"TreeView children: ${tree_view.childCount}")
           //update view
           adapter!!.nodesList = TreeUtils.getVisibleNodesD(root)
-          tree_view.refresh(null)
+          //tree_view.refresh(null)
+          adapter!!.notifyDataSetChanged()
           //start animation
           val offset = parent.firstVisiblePosition
           Log.d(TAG, "anim offset: $offset")
