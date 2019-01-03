@@ -4,7 +4,7 @@
 
 [![](https://jitpack.io/v/LeeReindeer/Tree2View.svg)](https://jitpack.io/#LeeReindeer/Tree2View)
 
-> TreeView implementation in Android.
+> TreeView implementation in Android.Now available on Jitpack:tada:
 
 [中文版](/README-ZH.md)
 
