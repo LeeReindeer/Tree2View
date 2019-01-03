@@ -14,7 +14,7 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.view.treeview.module;
+package moe.leer.tree2view.module;
 
 public interface TreeNode {
 

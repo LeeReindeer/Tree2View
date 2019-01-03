@@ -14,7 +14,7 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.view.treeview;
+package moe.leer.tree2view;
 
 import android.util.Pair;
 
@@ -23,8 +23,8 @@ import java.util.LinkedList;
 import java.util.Queue;
 import java.util.Stack;
 
-import xyz.leezoom.view.treeview.module.DefaultTreeNode;
-import xyz.leezoom.view.treeview.module.TreeNode;
+import moe.leer.tree2view.module.DefaultTreeNode;
+import moe.leer.tree2view.module.TreeNode;
 
 @SuppressWarnings({"unchecked", "WeakerAccess", "unused"})
 public class TreeUtils {

@@ -6,7 +6,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="xyz.leezoom.tree2.activity.MainActivity">
+    tools:context="moe.leer.filetree.activity.MainActivity">
 
     <!--
     <TextView
@@ -21,7 +21,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent">
 
-        <xyz.leezoom.view.treeview.TreeView
+        <moe.leer.tree2view.TreeView
             android:id="@+id/tree_view"
             android:layout_marginTop="16dp"
             android:layout_width="match_parent"
@@ -29,7 +29,7 @@
             android:divider="#ffffff"
             android:dividerHeight="1px">
 
-        </xyz.leezoom.view.treeview.TreeView>
+        </moe.leer.tree2view.TreeView>
 
     </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

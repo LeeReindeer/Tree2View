@@ -19,7 +19,7 @@ package xyz.leezoom.treeview;
 import org.junit.Before;
 import org.junit.Test;
 
-import xyz.leezoom.view.treeview.module.DefaultTreeNode;
+import moe.leer.tree2view.module.DefaultTreeNode;
 
 import static org.junit.Assert.assertEquals;
 

@@ -14,7 +14,7 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.tree2.module;
+package moe.leer.filetree.module;
 
 import android.os.Build;
 import android.support.annotation.RequiresApi;

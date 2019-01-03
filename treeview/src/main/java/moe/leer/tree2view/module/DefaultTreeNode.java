@@ -14,7 +14,7 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.view.treeview.module;
+package moe.leer.tree2view.module;
 
 import java.io.Serializable;
 import java.util.LinkedList;

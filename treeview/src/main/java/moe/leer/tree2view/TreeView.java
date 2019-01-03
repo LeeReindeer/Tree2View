@@ -14,7 +14,7 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.view.treeview;
+package moe.leer.tree2view;
 
 import android.content.Context;
 import android.util.AttributeSet;
@@ -29,10 +29,11 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.HashMap;
 
-import xyz.leezoom.view.treeview.adapter.SimpleTreeAdapter;
-import xyz.leezoom.view.treeview.adapter.TreeAdapter;
-import xyz.leezoom.view.treeview.module.DefaultTreeNode;
-import xyz.leezoom.view.treeview.module.TreeNode;
+import moe.leer.tree2view.adapter.SimpleTreeAdapter;
+import moe.leer.tree2view.adapter.TreeAdapter;
+import moe.leer.tree2view.module.DefaultTreeNode;
+import moe.leer.tree2view.module.TreeNode;
+import xyz.leezoom.view.treeview.R;
 
 @SuppressWarnings("unused")
 public class TreeView extends ListView {

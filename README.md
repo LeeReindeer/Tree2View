@@ -62,7 +62,7 @@ module.
 Feel free to use it as `ListView`.
 
 ```xml
-    <xyz.leezoom.view.treeview.TreeView
+    <moe.leer.tree2view.TreeView
         android:id="@+id/tree_view"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
@@ -70,7 +70,7 @@ Feel free to use it as `ListView`.
         android:divider="#ffffff"
         android:dividerHeight="1px">
 
-    </xyz.leezoom.view.treeview.TreeView>
+    </moe.leer.tree2view.TreeView>
 ```
 
 2. Add children in Kotlin code(Java is similar whit it)

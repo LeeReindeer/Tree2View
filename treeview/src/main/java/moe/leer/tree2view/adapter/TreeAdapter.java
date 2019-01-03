@@ -14,16 +14,15 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.view.treeview.adapter;
+package moe.leer.tree2view.adapter;
 
 import android.content.Context;
 import android.view.View;
-import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 
 import java.util.ArrayList;
 
-import xyz.leezoom.view.treeview.module.DefaultTreeNode;
+import moe.leer.tree2view.module.DefaultTreeNode;
 
 /**
  * Extend this class to set your own <code>TreeModel</code>

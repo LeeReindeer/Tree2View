@@ -14,7 +14,7 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.tree2.activity
+package moe.leer.filetree.activity
 
 import android.content.pm.PackageInfo
 import android.content.pm.PackageManager

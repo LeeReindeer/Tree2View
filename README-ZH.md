@@ -58,7 +58,7 @@ git clone git@github.com:LeeReindeer/Tree2View.git
 1. 在 `xml` 中添加，和 `ListView` 类似的.
 
 ```xml
-    <xyz.leezoom.view.treeview.TreeView
+    <moe.leer.tree2view.TreeView
         android:id="@+id/tree_view"
         android:layout_marginTop="16dp"
         android:layout_width="match_parent"
@@ -66,7 +66,7 @@ git clone git@github.com:LeeReindeer/Tree2View.git
         android:divider="#ffffff"
         android:dividerHeight="1px">
 
-    </xyz.leezoom.view.treeview.TreeView>
+    </moe.leer.tree2view.TreeView>
 ```
 2. 在代码里添加初始化，这里使用Kotlin(Java 代码类似)
 

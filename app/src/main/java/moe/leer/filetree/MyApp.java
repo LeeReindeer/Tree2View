@@ -14,27 +14,18 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.view.treeview;
+package moe.leer.filetree;
 
-import android.content.Context;
+import android.app.Application;
 
-import org.junit.Before;
-import org.junit.Test;
+import com.github.johnkil.print.PrintConfig;
 
-import static org.junit.Assert.assertEquals;
+public class MyApp extends Application{
 
-//@RunWith(AndroidJunit4.class)
-public class TreeViewTest {
-
-  private Context instrumentationCtx;
-
-  @Before
-  public void setup() {
-    //instrumentationCtx = InstrumentationRegistry.getContext();
+  @Override
+  public void onCreate() {
+    super.onCreate();
+    PrintConfig.initDefault(getAssets(), "fonts/material-icon-font.ttf");
   }
 
-  @Test
-  public void adapterShouldNonNull() {
-    //SimpleTreeAdapter adapter = new SimpleTreeAdapter()
-  }
 }

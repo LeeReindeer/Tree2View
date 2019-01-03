@@ -14,7 +14,7 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.view.treeview.adapter;
+package moe.leer.tree2view.adapter;
 
 import android.content.Context;
 import android.view.LayoutInflater;
@@ -23,8 +23,8 @@ import android.view.ViewGroup;
 import android.widget.TextView;
 
 import xyz.leezoom.view.treeview.R;
-import xyz.leezoom.view.treeview.TreeUtils;
-import xyz.leezoom.view.treeview.module.DefaultTreeNode;
+import moe.leer.tree2view.TreeUtils;
+import moe.leer.tree2view.module.DefaultTreeNode;
 
 public class SimpleTreeAdapter extends TreeAdapter<String> {
 
@@ -38,6 +38,7 @@ public class SimpleTreeAdapter extends TreeAdapter<String> {
     //dfs travel when first time called
     if (mNodesList == null) {
       mNodesList = TreeUtils.getVisibleNodesD(super.mRoot);
+      notifyDataSetChanged();
     }
     DefaultTreeNode node = mNodesList.get(position);
     ViewHolder holder = null;
