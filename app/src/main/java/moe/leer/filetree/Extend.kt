@@ -14,13 +14,18 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.tree2
+package moe.leer.filetree
 
 import android.app.Activity
+import android.content.ActivityNotFoundException
 import android.content.Intent
 import android.net.Uri
+import android.os.Build
+import android.os.StrictMode
 import android.support.v4.app.ActivityCompat
-import xyz.leezoom.tree2.module.FileItem
+import android.webkit.MimeTypeMap
+import android.widget.Toast
+import moe.leer.filetree.module.FileItem
 import java.io.File
 
 
@@ -29,13 +34,31 @@ fun Activity.requestPermission(permission: String, requestCode: Int) {
 }
 
 fun Activity.openFile(fileItem: FileItem) {
-  val myIntent = Intent(Intent.ACTION_VIEW)
-  myIntent.data = Uri.fromFile(File(fileItem.absName))
-  val intent = Intent.createChooser(myIntent, "Choose an application to open with:")
-  startActivity(intent)
+  //exposure file uri
+  if (Build.VERSION.SDK_INT >= 24) {
+    try {
+      val m = StrictMode::class.java.getMethod("disableDeathOnFileUriExposure")
+      m.invoke(null)
+    } catch (e: Exception) {
+      e.printStackTrace()
+    }
+  }
+  val file = File(fileItem.absName)
+  val myMime = MimeTypeMap.getSingleton()
+  val newIntent = Intent(Intent.ACTION_VIEW)
+  val mimeType = myMime.getMimeTypeFromExtension(file.extension)
+  newIntent.flags = (Intent.FLAG_ACTIVITY_NEW_TASK)
+  newIntent.setDataAndType(Uri.fromFile(file), mimeType)
+
+
+  try {
+    startActivity(newIntent)
+  } catch (e: ActivityNotFoundException) {
+    Toast.makeText(this, "No handler for this type of file.", Toast.LENGTH_LONG).show()
+  }
 }
 
-fun  File.isHideFile(): Boolean {
+fun File.isHideFile(): Boolean {
   return (this.name.indexOf(".") == 0)
 }
 
