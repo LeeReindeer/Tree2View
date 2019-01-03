@@ -1,7 +1,8 @@
 # Tree2View 
 
-[![Build Status](https://travis-ci.org/LeeReindeer/Tree2View.svg?branch=master)](https://travis-ci.org/LeeReindeer/Tree2View)
+<!--[![Build Status](https://travis-ci.org/LeeReindeer/Tree2View.svg?branch=master)](https://travis-ci.org/LeeReindeer/Tree2View)-->
 
+![](https://jitpack.io/v/LeeReindeer/Tree2View.svg)](https://jitpack.io/#LeeReindeer/Tree2View)
 > TreeView implementation in Android.
 
 [中文版](/README-ZH.md)
@@ -17,7 +18,7 @@
 |⑤Select listener | Long press node for file operations (Copy, Cut, Rename, Delete) |
 |⑥Animation support | Add or delete files with animation |
 
-You can also see [a more simple example](/demo/app/src/main/java/xyz/leezoom/tree2view_demo/MainActivity.java).
+You can also see [a more simple example](https://github.com/LeeReindeer/Tree2View-demo).
 
 ## Implement
 
@@ -37,22 +38,23 @@ You can also see [a more simple example](/demo/app/src/main/java/xyz/leezoom/tre
 
 ## Download
 
-> To-do: upload to jCenter.
+1. Add it in your root build.gradle at the end of repositories:
 
-1. But now, you can just clone this repo to use Tree2View.
-
-```git
-git clone git@github.com:LeeReindeer/Tree2View.git
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
 ```
 
-2. Open your project in Android Studio, then Click `FIle` -> `New` -> `Import Module`, to import this 
-module.
+2. Add the dependency
 
-3. Add dependence in your `build.gradle`
-```groovy
- implementation project(path: ':treeview')
- //or
- compile project(path: ':treeview')
+```
+	dependencies {
+	        implementation 'com.github.LeeReindeer:Tree2View:v0.1.2'
+	}
 ```
 
 ## Usage

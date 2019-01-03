@@ -1,6 +1,8 @@
 # Tree2View 
 
-[![Build Status](https://travis-ci.org/LeeReindeer/Tree2View.svg?branch=master)](https://travis-ci.org/LeeReindeer/Tree2View)
+<!--[![Build Status](https://travis-ci.org/LeeReindeer/Tree2View.svg?branch=master)](https://travis-ci.org/LeeReindeer/Tree2View)-->
+
+![](https://jitpack.io/v/LeeReindeer/Tree2View.svg)](https://jitpack.io/#LeeReindeer/Tree2View)
 
 > TreeView implementation in Android.
 
@@ -15,7 +17,7 @@
 |⑤选择模式 | 长按节点进行文件操作(Copy, Cut, Rename, Delete) |
 |⑥动画支持，内置增删节点的动画 | 增删文件时带有动画 |
 
-[一个更简单的例子](/demo/app/src/main/java/xyz/leezoom/tree2view_demo/MainActivity.java)
+[一个更简单的例子](https://github.com/LeeReindeer/Tree2View-demo)
 
 ## 实现原理
 
@@ -35,22 +37,23 @@
 
 ## 下载
 
-> 未上传到 `jCenter()`。
+1. 在项目的 build.gradle 中添加：
 
-1. 可直接clone本项目使用。
-
-```git
-git clone git@github.com:LeeReindeer/Tree2View.git
+```
+	allprojects {
+		repositories {
+			...
+			maven { url 'https://jitpack.io' }
+		}
+	}
 ```
 
-2. 打开 Android Studio, 依次点击 `FIle` -> `New` -> `Import Module`, 导入这个 module 即可。
+2. 在 app 目录下的 build.gradle 添加：
 
-3. 在 `build.gradle` 里添加依赖
-
-```groovy
- implementation project(path: ':treeview')
- //或者
- compile project(path: ':treeview')
+```
+	dependencies {
+	        implementation 'com.github.LeeReindeer:Tree2View:v0.1.2'
+	}
 ```
 
 ## 使用
