@@ -14,22 +14,20 @@
  *       limitations under the License.
  */
 
-package xyz.leezoom.tree2.module;
+package moe.leer.filetree.module;
 
 import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.view.animation.Animation;
-import android.view.animation.AnimationUtils;
 import android.widget.TextView;
 
 import com.github.johnkil.print.PrintView;
 
 import xyz.leezoom.tree2.R;
-import xyz.leezoom.view.treeview.TreeUtils;
-import xyz.leezoom.view.treeview.adapter.TreeAdapter;
-import xyz.leezoom.view.treeview.module.DefaultTreeNode;
+import moe.leer.tree2view.TreeUtils;
+import moe.leer.tree2view.adapter.TreeAdapter;
+import moe.leer.tree2view.module.DefaultTreeNode;
 
 public class FileTreeAdapter extends TreeAdapter<FileItem> {
 
@@ -42,6 +40,7 @@ public class FileTreeAdapter extends TreeAdapter<FileItem> {
   public View getView(int position, View convertView, ViewGroup parent) {
     if (mNodesList == null) {
       mNodesList = TreeUtils.getVisibleNodesD(super.mRoot);
+      notifyDataSetChanged();
     }
     DefaultTreeNode node = mNodesList.get(position);
     ViewHolder holder;
